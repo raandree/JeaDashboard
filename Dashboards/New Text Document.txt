@@ -1,0 +1,13 @@
+New-UDDashboard -Title "Hello, World!" -Content {
+    New-UDHeading -Text "Hello, World!" -Size 1 -Id hdHelloWorld
+
+    New-UDButton -Text "Click me!" -OnClick {
+        Show-UDToast -Message "Clicked!"
+    }
+
+    New-UDButton -Size 20 -Text "Test Button" -OnClick { 
+        Show-UDModal -Content {
+            New-UDHeading -Text "Hello, World!" -Size 1
+        }
+     }
+}
