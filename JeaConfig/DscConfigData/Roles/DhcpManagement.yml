@@ -1,0 +1,49 @@
+Configurations:
+  - JeaRoles
+
+JeaRoles:
+  Roles:
+
+    - Path: C:\Program Files\WindowsPowerShell\Modules\Demos\RoleCapabilities\DhcpManagement.psrc
+      ModulesToImport:
+      - DhcpServer
+      VisibleFunctions:
+      - New-xDhcpReservation
+      FunctionDefinitions:
+      - Name: New-xDhcpReservation
+        ScriptBlock: |
+          param (
+              [Parameter(Mandatory, ParameterSetName = 'ByParameters')]
+              [string]$ScopeId,
+
+              [Parameter(Mandatory, ParameterSetName = 'ByParameters')]
+              [string]$IPAddress,
+
+              [Parameter(Mandatory, ParameterSetName = 'ByParameters')]
+              [string]$ClientId,
+
+              [Parameter(Mandatory, ParameterSetName = 'ByParameters')]
+              [string]$Name,
+
+              [Parameter(Mandatory, ParameterSetName = 'FileUpload')]
+              [string]$FilePath,
+
+              [Parameter(ParameterSetName = 'FileUpload')]
+              [switch]$DoNotArchiveInputFile
+          )
+
+          if ($PSCmdlet.ParameterSetName -eq 'ByParameters') {
+              Add-DhcpServerv4Reservation @PSBoundParameters
+              "DHCP Reservation created"
+          }
+          elseif ($PSCmdlet.ParameterSetName -eq 'FileUpload') {
+              $data = Get-Content -Path $FilePath | ConvertFrom-Csv -Delimiter ';'
+              $data | Add-DhcpServerv4Reservation
+              if (-not $DoNotArchiveInputFile) {
+                  Remove-Item -Path $FilePath -Force
+              }
+              "Created $($data.Count) DHCP reservations."
+          }
+          else {
+              Write-Error 'Unknown parameter set'
+          }

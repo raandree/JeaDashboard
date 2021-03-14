@@ -1,0 +1,49 @@
+Configurations:
+  - JeaRoles
+
+JeaRoles:
+  Roles:
+    
+    - Path: C:\Program Files\WindowsPowerShell\Modules\JeaDiscovery\RoleCapabilities\JeaCapability.psrc
+      ModulesToImport: JeaDiscovery
+      VisibleFunctions:
+      - Get-JeaPSSessionConfiguration
+      - Get-JeaPSSessionCapability
+      FunctionDefinitions:
+      - Name: Get-JeaPSSessionConfiguration
+        ScriptBlock: |
+          Get-PSSessionConfiguration | Where-Object Name -notlike microsoft*
+      - Name: Get-JeaPSSessionCapability
+        ScriptBlock: |
+              param(
+                  [Parameter(Mandatory)]
+                  [string]$ConfigurationName,
+
+                  [Parameter(Mandatory)]
+                  [string]$Username,
+                        
+                  [switch]$OnlyVisibleFunctions
+              )
+                    
+              if ($OnlyVisibleFunctions) {
+                  $modules = Get-ModuleWithRoleCapabilities
+                  $roles = Get-PSRoleCapability -ModuleBasePath $modules[0].ModuleBase
+              }
+
+              Get-PSSessionCapability -ConfigurationName $ConfigurationName -Username $Username | ForEach-Object {
+                  $return = if ($OnlyVisibleFunctions -and $_.Name -in $roles.VisibleFunctions) {
+                      $true
+                  }
+                  elseif (-not $OnlyVisibleFunctions) {
+                      $true
+                  }
+
+                  if ($return) {
+                      [pscustomobject]@{
+                          Name        = $_.Name
+                          Parameters  = $_.Parameters
+                          CommandType = $_.CommandType
+                          ScriptBlock = $_.ScriptBlock
+                      }
+                  }
+              }

@@ -1,0 +1,51 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20210314102520
+Username: RAANDREE2\randr
+RunAs User: RAANDREE2\randr
+Configuration Name: 
+Machine: RAANDREE2 (Microsoft Windows NT 10.0.19042.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command Import-Module 'c:\Users\randr\.vscode\extensions\ms-vscode.powershell-preview-2021.2.1\modules\PowerShellEditorServices\PowerShellEditorServices.psd1'; Start-EditorServices -HostName 'Visual Studio Code Host' -HostProfileId 'Microsoft.VSCode' -HostVersion '2021.2.1' -AdditionalModules @('PowerShellEditorServices.VSCode') -BundledModulesPath 'c:\Users\randr\.vscode\extensions\ms-vscode.powershell-preview-2021.2.1\modules' -EnableConsoleRepl -StartupBanner '=====> PowerShell Preview Integrated Console v2021.2.1 <=====
+' -LogLevel 'Normal' -LogPath 'c:\Users\randr\.vscode\extensions\ms-vscode.powershell-preview-2021.2.1\logs\1615711357-34912eef-10cc-4cec-a616-2fe996f6aa1c1615711353537\EditorServices.log' -SessionDetailsPath 'c:\Users\randr\.vscode\extensions\ms-vscode.powershell-preview-2021.2.1\sessions\PSES-VSCode-16696-829681' -FeatureFlags @() 
+Process ID: 37400
+PSVersion: 5.1.19041.610
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.610
+BuildVersion: 10.0.19041.610
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is C:\Git\JeaDashboard\JeaConfig\BuildOutput\Logs\TestDscResources.log
+------------------------------------------------------------
+Currently loaded modules:
+C:\Git\JeaDashboard\JeaConfig\DscConfigurations
+C:\Git\JeaDashboard\JeaConfig\DscResources
+C:\Git\JeaDashboard\JeaConfig\BuildOutput\Modules
+C:\Windows\System32\WindowsPowerShell\v1.0\Modules
+------------------------------------------------------------
+The 'CommonTasks' module provides the following configurations (DSC Composite Resources)
+ResourceCount 4
+ResourceCount matches (4)
+------------------------------------------------------------
+Known DSC Composite Resources
+------------------------------------------------------------
+
+ImplementedAs   Name                      ModuleName                     Version    Properties                                        
+-------------   ----                      ----------                     -------    ----------                                        
+Composite       FilesAndFolders           CommonTasks                    0.3.60     {DependsOn, PsDscRunAsCredential, Items}          
+Composite       JeaEndpoints              CommonTasks                    0.3.60     {DependsOn, PsDscRunAsCredential, Endpoints}      
+Composite       JeaRoles                  CommonTasks                    0.3.60     {DependsOn, PsDscRunAsCredential, Roles}          
+Composite       Scripts                   CommonTasks                    0.3.60     {DependsOn, PsDscRunAsCredential, Items}
+------------------------------------------------------------
+Known DSC Resources
+------------------------------------------------------------
+
+@{Name=xPSDesiredStateConfiguration, 9.1.0; Count=22}
+@{Name=JeaDsc, 0.7.2; Count=2}
+------------------------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20210314102524
+**********************
