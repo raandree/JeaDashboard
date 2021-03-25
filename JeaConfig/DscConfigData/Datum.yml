@@ -7,6 +7,7 @@ ResolutionPrecedence:
   - Roles\DhcpManagement
   - JEA\Endpoints
   - JEA\Helpers
+  - Baselines\DscLcm
 
 default_lookup_options: MostSpecific
 

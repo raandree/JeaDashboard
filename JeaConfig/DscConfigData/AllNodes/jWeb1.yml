@@ -1,0 +1,8 @@
+NodeName: jWeb1
+
+PSDscAllowPlainTextPassword: True
+PSDscAllowDomainUser: True
+
+LcmConfig:
+  Settings:
+    RefreshMode: Push

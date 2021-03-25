@@ -1,0 +1,7 @@
+LcmConfig:
+  Settings:
+    RefreshMode: Push
+    RebootNodeIfNeeded: true
+    ActionAfterReboot: ContinueConfiguration
+    AllowModuleOverwrite: true
+    ConfigurationMode: ApplyAndAutoCorrect
