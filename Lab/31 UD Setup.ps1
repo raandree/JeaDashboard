@@ -4,76 +4,36 @@
 
 $here = $PSScriptRoot
 $webServers = Get-LabVM -Role WebServer | Select-Object -First 1
-$udRepositoryPath = 'C:\ProgramData\UniversalAutomation\Repository'
-$localUdRepositoryPath = "$here\..\Dashboards\*"
 
-Copy-LabFileItem -Path $localUdRepositoryPath -ComputerName $webServers -DestinationFolderPath $udRepositoryPath
+Copy-LabFileItem -Path "$here\..\Dashboards\*" -DestinationFolderPath 'C:\ProgramData\UniversalAutomation\Repository' -ComputerName $webServers
+Copy-LabFileItem -Path "$here\..\JeaConfig\DscResources\*" -DestinationFolderPath 'C:\Program Files\WindowsPowerShell\Modules' -ComputerName $webServers
+Copy-LabFileItem -Path "$here\..\JeaConfig" -DestinationFolderPath C:\Git -ComputerName $webServers
 
 foreach ($webServer in $webServers) {
 
     $cert = Get-LabCertificate -SearchString "CN=$($webServer.FQDN)" -FindType FindBySubjectDistinguishedName -Location CERT_SYSTEM_STORE_LOCAL_MACHINE -Store My -ComputerName $webServer
-    
 
     Invoke-LabCommand -ActivityName 'Setup Web Site' -ScriptBlock {
 
-        Get-Website -Name 'Default Web Site' | Remove-Website
+        $dashboardsFilePath = 'C:\ProgramData\UniversalAutomation\Repository\.universal\dashboards.ps1'
+        Remove-Item -Path $dashboardsFilePath -Force -ErrorAction SilentlyContinue
 
-        Expand-Archive -Path (Resolve-Path -Path C:\Universal*x64*.zip).Path -DestinationPath $webPath
+        $files = dir -Path C:\ProgramData\UniversalAutomation\Repository\ -Filter *.ps1 -File
 
-        $user = Get-ADUser -Identity $serviceUsername
-        $appPool = New-WebAppPool -Name UD
-        $appPool.processModel.userName = "$($env:USERDOMAIN)\$($user.Name)"
-        $appPool.processModel.password = $serviceUserPassword
-        $appPool.processModel.identityType = 'SpecificUser'
-        $appPool | Set-Item
+        foreach ($file in $files) {
+            $fileName = $file.BaseName
+            $entry = "New-PSUDashboard -Name '$fileName' -FilePath '$fileName.ps1' -BaseUrl '/$fileName' -Framework 'UniversalDashboard:Latest' -SessionTimeout 0 -AutoDeploy"
 
-        $webSite = New-Website -Name UD -Port 80 -ApplicationPool $appPool.name -PhysicalPath $webPath
-        New-WebBinding -Name $webSite.name -IP "*" -Port 443 -Protocol https
-        Get-Item -Path "Cert:\LocalMachine\My\$($cert.Thumbprint)" | New-Item -Path IIS:\SslBindings\0.0.0.0!443
+            $entry | Out-File -FilePath $dashboardsFilePath -Append
+        }
 
         Set-ItemProperty -Path C:\ProgramData -Name Attributes -Value Normal
 
-        #Stop-Service -Name PowerShellUniversal
-        #Copy-Item -Path C:\ProgramData\UniversalAutomation -Destination C:\ProgramData\UniversalAutomationIIS -Recurse
+        Restart-Service -Name PowerShellUniversal
 
-        Add-NTFSAccess -Path $webPath -Account $serviceUsername -AccessRights Modify
-        Add-NTFSAccess -Path C:\ProgramData\UniversalAutomation -Account $serviceUsername -AccessRights Modify
-
-        iisreset /stop
-        Start-Service -Name PowerShellUniversal
-
-        @'
-New-UDDashboard -Title "Test Dashboard 1" -Content {
-    New-UDTypography -Text "Hello, World!"
-
-    New-UDButton -Text "Learn more about Universal Dashboard" -OnClick {
-        Invoke-UDRedirect https://docs.ironmansoftware.com
-    }
-}
-'@ | Out-File -FilePath C:\ProgramData\UniversalAutomation\Repository\Test1.ps1
-
-        @'
-New-UDDashboard -Title "Test Dashboard 2" -Content {
-    New-UDTypography -Text "Hello, World!"
-
-    New-UDButton -Text "Learn more about Universal Dashboard" -OnClick {
-        Invoke-UDRedirect https://docs.ironmansoftware.com
-    }
-}
-'@ | Out-File -FilePath C:\ProgramData\UniversalAutomation\Repository\Test2.ps1
-
-        $latestUDDashboardFramework = dir C:\ProgramData\PowerShellUniversal\Dashboard\Frameworks\UniversalDashboard |
-        Sort-Object -Descending |
-        Select-Object -ExpandProperty Name -First 1
-
-        @"
-New-PSUDashboard -Name "Test1" -FilePath "Test1.ps1" -BaseUrl "/Test1" -Framework "UniversalDashboard:$latestUDDashboardFramework" 
-New-PSUDashboard -Name "Test2" -FilePath "Test2.ps1" -BaseUrl "/Test2" -Framework "UniversalDashboard:$latestUDDashboardFramework"
-"@ | Out-File -FilePath C:\ProgramData\UniversalAutomation\Repository\.universal\dashboards.ps1
-
-    } -ComputerName $webServer -Variable (Get-Variable -Name cert, webPath, serviceUsername, serviceUserPassword)
+    } -ComputerName $webServer
 
 }
 
 Write-Host "2. - Creating Snapshot 'AfterPuSetup'" -ForegroundColor Magenta
-Checkpoint-LabVM -All -SnapshotName AfterPowerShellUniversalSetup
+#Checkpoint-LabVM -All -SnapshotName AfterPowerShellUniversalSetup
