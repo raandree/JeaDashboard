@@ -8,6 +8,6 @@
         }
     }
 
-    JeaDsc                       = '0.7.2'
-    xPSDesiredStateConfiguration = '9.1.0'
+    #JeaDsc                       = '0.7.2'
+    #xPSDesiredStateConfiguration = '9.1.0'
 }
