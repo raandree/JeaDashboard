@@ -152,31 +152,31 @@ class SessionConfigurationUtility
             }
 
             $registerString = if ($Path)
-            {
-                @"
+        {
+            @"
 if (Get-PSSessionConfiguration -Name '$Name' -ErrorAction SilentlyContinue)
 {
     Unregister-PSSessionConfiguration -Name '$Name' -NoServiceRestart -ErrorAction Stop -WarningAction SilentlyContinue
 }
 `$null = Register-PSSessionConfiguration -Name '$Name' -Path '$Path' -NoServiceRestart -ErrorAction Stop -WarningAction SilentlyContinue
 "@
-            }
-            else
-            {
-                @"
+        }
+        else
+        {
+            @"
 if (Get-PSSessionConfiguration -Name '$Name' -ErrorAction SilentlyContinue)
 {
     Unregister-PSSessionConfiguration -Name '$Name' -NoServiceRestart -ErrorAction Stop -WarningAction SilentlyContinue
 }
 `$null = Register-PSSessionConfiguration -Name '$Name' -NoServiceRestart -ErrorAction Stop -WarningAction SilentlyContinue
 "@
-            }
+        }
 
-            $registerScriptBlock = [scriptblock]::Create($registerString)
+        $registerScriptBlock = [scriptblock]::Create($registerString)
 
-            if ($Timeout -gt 0)
-            {
-                Start-Job -ScriptBlock $registerScriptBlock | Receive-Job -Wait -AutoRemoveJob
+        if ($Timeout -gt 0)
+        {
+            Start-Job -ScriptBlock $registerScriptBlock | Receive-Job -Wait -AutoRemoveJob
 
                 # If WinRM is still Stopping after the job has completed / exceeded $Timeout, force kill the underlying WinRM process
                 $winRMService = Get-Service -Name WinRM
@@ -351,7 +351,7 @@ class JeaRoleCapabilities:RoleCapabilitiesUtility
                             $propertyValue.ScriptBlock = [scriptblock]::Create($Matches.Code)
                         }
 
-                        ConvertTo-Expression -Object $propertyValue -NewLine "`n"
+                        ConvertTo-Expression -Object $propertyValue
                     }
                     elseif ($propertyValue -is [hashtable] -and $propertyType -eq 'hashtable')
                     {
@@ -447,7 +447,7 @@ class JeaRoleCapabilities:RoleCapabilitiesUtility
 
                 $fPath = $desiredState.Path
                 $desiredState.Remove('Path')
-                $content = $desiredState | ConvertTo-Expression -NewLine "`n"
+                $content = $desiredState | ConvertTo-Expression
                 $content | Set-Content -Path $fPath -Force
             }
         }
@@ -481,12 +481,12 @@ class JeaRoleCapabilities:RoleCapabilitiesUtility
             $propertiesAsObject = $cmdlet.Parameters.Keys |
                 Where-Object { $_ -in $desiredState.Keys } |
                     Where-Object { $cmdlet.Parameters.$_.ParameterType.FullName -in 'System.Collections.IDictionary', 'System.Collections.Hashtable', 'System.Collections.IDictionary[]', 'System.Object[]' }
-            foreach ($key in $propertiesAsObject)
+            foreach ($p in $propertiesAsObject)
             {
-                if ($cmdlet.Parameters.$key.ParameterType.FullName -in 'System.Collections.Hashtable', 'System.Collections.IDictionary', 'System.Collections.IDictionary[]', 'System.Object[]')
+                if ($cmdlet.Parameters.$p.ParameterType.FullName -in 'System.Collections.Hashtable', 'System.Collections.IDictionary', 'System.Collections.IDictionary[]', 'System.Object[]')
                 {
-                    $desiredState."$($key)" = $desiredState."$($key)" | Convert-StringToObject
-                    $currentState."$($key)" = $currentState."$($key)" | Convert-StringToObject
+                    $desiredState."$($p)" = $desiredState."$($p)" | Convert-StringToObject
+                    $currentState."$($p)" = $currentState."$($p)" | Convert-StringToObject
                 }
             }
 
@@ -637,20 +637,12 @@ class JeaSessionConfiguration:SessionConfigurationUtility
 
     ## The optional number of seconds to wait for registering the endpoint to complete.
     ## 0 for no timeout
-    [Dscproperty(NotConfigurable)]
+    [Dscproperty()]
     [int] $HungRegistrationTimeout = 10
 
     # Contains the not compliant properties detected in Get() method.
     [DscProperty(NotConfigurable)]
     [Reason[]]$Reasons
-    
-    $properties
-    
-    JeaSessionConfiguration () {
-        $this.properties = [JeaSessionConfiguration].GetProperties() |
-        Where-Object { $_.CustomAttributes.Where(
-            {$_.AttributeType.Name -eq 'DscPropertyAttribute' -and $_.NamedArguments.MemberName -ne 'NotConfigurable'})}
-    }
 
     [void] Set()
     {
@@ -739,20 +731,22 @@ class JeaSessionConfiguration:SessionConfigurationUtility
             return $false
         }
 
-        
-        $currentState.Clone().Keys | Where-Object { $_ -notin $this.properties.Name } | ForEach-Object { $currentState.Remove($_) }
-        $desiredState.Clone().Keys | Where-Object { $_ -notin $this.properties.Name } | ForEach-Object { $desiredState.Remove($_) }
-        $keys = $this.properties.Name
-        
-        foreach ($key in $keys)
+        $cmdlet = Get-Command -Name New-PSSessionConfigurationFile
+        $desiredState = Sync-Parameter -Command $cmdlet -Parameters $desiredState
+        $currentState = Sync-Parameter -Command $cmdlet -Parameters $currentState
+        $propertiesAsObject = $cmdlet.Parameters.Keys |
+        Where-Object { $_ -in $desiredState.Keys } |
+        Where-Object { $cmdlet.Parameters.$_.ParameterType.FullName -in 'System.Collections.IDictionary', 'System.Collections.Hashtable', 'System.Collections.IDictionary[]', 'System.Object[]' }
+        foreach ($p in $propertiesAsObject)
         {
-            if ($key.PropertyType.FullName -in 'System.Collections.Hashtable', 'System.Collections.IDictionary', 'System.Collections.IDictionary[]', 'System.Object[]')
+            if ($cmdlet.Parameters.$p.ParameterType.FullName -in 'System.Collections.Hashtable', 'System.Collections.IDictionary', 'System.Collections.IDictionary[]', 'System.Object[]')
             {
-                $desiredState."$($key)" = $desiredState."$($key)" | Convert-StringToObject
-                $currentState."$($key)" = $currentState."$($key)" | Convert-StringToObject
+                $desiredState."$($p)" = $desiredState."$($p)" | Convert-StringToObject
+                $currentState."$($p)" = $currentState."$($p)" | Convert-StringToObject
+
             }
         }
-        #Wait-Debugger
+
         $compare = Test-DscParameterState -CurrentValues $currentState -DesiredValues $desiredState -TurnOffTypeChecking -SortArrayValues -ReverseCheck
 
         return $compare
@@ -800,7 +794,7 @@ class JeaSessionConfiguration:SessionConfigurationUtility
                         $propertyValue.ScriptBlock = [scriptblock]::Create($Matches.Code)
                     }
 
-                    ConvertTo-Expression -Object $propertyValue -NewLine "`n"
+                    ConvertTo-Expression -Object $propertyValue
                 }
                 elseif ($propertyValue -is [hashtable] -and $propertyType -eq 'hashtable')
                 {
