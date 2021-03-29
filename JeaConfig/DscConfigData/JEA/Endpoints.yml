@@ -3,15 +3,18 @@ Configurations:
 
 JeaEndpoints:
   EndPoints:
-
     - Name: JeaDiscovery
       Ensure: Present
       RoleDefinitions:
         NT AUTHORITY\Authenticated Users:
           RoleCapabilities:
-          - JeaCapability
+            - JeaCapability
       SessionType: RestrictedRemoteServer
-
+      HungRegistrationTimeout: 15
+      VisibleProviders:
+        - FileSystem
+      RunAsVirtualAccount: true
+    
     - Name: JeaDemo1
       GroupManagedServiceAccount: contoso\GMSA1
       Ensure: Present
@@ -23,7 +26,7 @@ JeaEndpoints:
           RoleCapabilities:
           - Demo1
       SessionType: RestrictedRemoteServer
-
+    
     - Name: JeaDemo2
       GroupManagedServiceAccount: contoso\GMSA2
       Ensure: Present
@@ -37,7 +40,7 @@ JeaEndpoints:
           - Demo1
           - Demo2
       SessionType: RestrictedRemoteServer
-
+    
     - Name: AdManagement
       GroupManagedServiceAccount: contoso\GMSA2
       Ensure: Present
@@ -49,7 +52,7 @@ JeaEndpoints:
           RoleCapabilities:
           - AdManagement
       SessionType: RestrictedRemoteServer
-
+    
     - Name: DhcpManagement
       GroupManagedServiceAccount: contoso\GMSA2
       Ensure: Present
@@ -61,7 +64,7 @@ JeaEndpoints:
           RoleCapabilities:
           - DhcpManagement
       SessionType: RestrictedRemoteServer
-
+    
     - Name: AdTest
       GroupManagedServiceAccount: contoso\GMSA2
       Ensure: Present
