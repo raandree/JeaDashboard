@@ -13,18 +13,18 @@ AddsOrgUnitsAndGroups:
     - GroupName: AdManagementAll
       Description: JEA Group
       GroupScope: Global
-      Path: CN=Admin
+      Path: OU=Admin
       Members:
         - Install
         - Administrator
     - GroupName: AdManagementUsers
       Description: JEA Group
       GroupScope: Global
-      Path: CN=Admin
+      Path: OU=Admin
     - GroupName: AdManagementComputers
       Description: JEA Group
       GroupScope: Global
-      Path: CN=Admin
+      Path: OU=Admin
 
 JeaEndpoints:
   EndPoints:
