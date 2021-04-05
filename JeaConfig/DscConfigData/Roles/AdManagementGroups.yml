@@ -1,0 +1,41 @@
+Configurations:
+  - JeaRoles
+
+JeaRoles:
+  Roles:
+
+    - Path: C:\Program Files\WindowsPowerShell\Modules\Demos\RoleCapabilities\AdManagementGroups.psrc
+      ModulesToImport:
+      - ActiveDirectory
+      VisibleFunctions:
+      - New-xAdGroup
+      - Remove-xAdGroup
+      FunctionDefinitions:
+      - Name: New-xAdGroup
+        ScriptBlock: |
+          param (
+              [Parameter(ParameterSetName = 'Default')]
+              [string]$Path = "CN=Users,$((Get-ADRootDSE).defaultNamingContext)",
+              
+              [Parameter(Mandatory, ParameterSetName = 'Default')]
+              [string]$Name,
+              
+              [Parameter(ParameterSetName = 'Default')]
+              [string]$Description,
+
+              [Parameter(ParameterSetName = 'Default')]
+              [ValidateSet('DomainLocal', 'Universal', 'Global')]
+              [string]$GroupType
+          )
+    
+          "New-ADGroup -Path $Path -Name $Name -GroupType $GroupType -Description $Description" | Out-File -FilePath C:\Commands.txt -Append
+          New-ADGroup -Path $Path -Name $Name -GroupType $GroupType -Description $Description
+      - Name: Remove-xAdGroup
+        ScriptBlock: |
+          param (
+              [Parameter(Mandatory, ParameterSetName = 'Default')]
+              [string]$Identity
+          )
+    
+          "Remove-ADGroup -Identity $Identity -Confirm:$false" | Out-File -FilePath C:\Commands.txt -Append
+          Remove-ADGroup -Identity $Identity -Confirm:$false
