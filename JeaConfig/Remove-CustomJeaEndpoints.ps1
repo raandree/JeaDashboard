@@ -6,4 +6,5 @@ ForEach-Object {
     Write-Host "Unregistering '$($_.Name)'"
     Unregister-PSSessionConfiguration -Name $_.Name -Force -NoServiceRestart
 }
+
 Restart-Service -Name WinRM
