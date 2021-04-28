@@ -187,17 +187,10 @@ function New-xTaskForm {
 Import-Module -Name Universal
 $user = 'contoso\install'
 $cred = New-Object pscredential($user, ('Somepass1' | ConvertTo-SecureString -AsPlainText -Force))
-$cache:jeaServer = 'fiweb1'
-$jeaServer = 'fiweb1'
+$cache:jeaServer = 'jWeb1'
+$jeaServer = 'jWeb1'
 
 New-UDDashboard -Title "JEA Task" -Content {
-
-    if (-not $JeaEndpointName) {
-        $JeaEndpointName = 'JeaDemo2'
-    }
-    if (-not $TaskName) {
-        $TaskName = 'Set-xContent1'
-    }
 
     $user = 'contoso\install'
     $session:jeaEndpointName = $JeaEndpointName
