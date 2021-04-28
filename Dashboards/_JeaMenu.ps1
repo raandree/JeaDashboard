@@ -44,14 +44,32 @@ function New-xPage {
     $isloaded = "`${$($Store):$($id)_loaded}"
     New-UDPage -Name $Name -Content {
         New-UDTypography -Text "Endpoint name: $jeaEndpointName | PID: $PID | Username = $user"
-        New-UDDynamic -Id $id -Content {
 
+        [string]$passwordDynId = New-Guid
+        New-UDDynamic -Id $passwordDynId -Content {
+            Wait-Debugger
+            if (-not $session:userPassword) {
+                $header = New-UDCardHeader -Title 'Please provide your password'
+                $body = New-UDCardBody -Content {
+                    New-UDForm -Content {
+                        New-UDTextbox -Id 'txtPassword' -Label Password
+                    } -OnSubmit {
+                        $session:userPassword = $EventData.txtTextfield
+                        Wait-Debugger
+                        Sync-UDElement -Id $passwordDynId
+                    }
+                }
+
+                New-UDCard -Body $body -Header $header
+            }
+        } -AutoRefresh 1
+        
+        New-UDDynamic -Id $id -Content {
             Invoke-Ternary -Decider ([scriptblock]::Create($isloaded)) -IfTrue {
                 New-xTable -JeaEndpointName $jeaEndpointName
             } -IfFalse {
                 New-xWait -JeaEndpointName $jeaEndpointName
             }
-
         }
     }
 }
@@ -65,20 +83,18 @@ function New-xTable {
     $columns = @(
         New-UDTableColumn -Property Name -Title Name
         New-UDTableColumn -Property Action -Render {
-            $item = $body | ConvertFrom-Json
+            #$item = $body | ConvertFrom-Json
 
             $parameters = ($session:tasks.$JeaEndpointName | Where-Object Name -eq $item.Name).Parameters
             $parameterDefaultValues = Get-FunctionDefaultParameter -Scriptblock ([scriptblock]::Create($item.ScriptBlock))
 
             New-UDButton -Id "btn$JeaEndpointName_$($item.Name)" -Text $item.Name -OnClick {
-                $item = $body | ConvertFrom-Json
+                #$item = $body | ConvertFrom-Json
                 Invoke-UDRedirect -Url "http://localhost:5000/_JeaTask/Home?JeaEndpointName=$jeaEndpointName&TaskName=$($item.Name)" -OpenInNewWindow
             }
         }
     )
 
-    #$data = Get-Item -Path Session:"tasks.$JeaEndpointName" | Select-Object -Property Name, Parameters, CommandType
-    #Wait-Debugger
     $data = if ((Get-Item -Path Session:"tasks.$JeaEndpointName").GetType().Name -eq 'PSCustomObject') {
         [pscustomobject]@{
             Name        = (Get-Item -Path Session:"tasks.$JeaEndpointName").Name
@@ -97,7 +113,6 @@ function New-xTable {
                 }
             })
     }
-    #Wait-Debugger
     New-UdTable -Data $data -Columns $columns -Id "tbl$($jeaEndpoint.Name)" -Sort -Filter -Search
 }
 
@@ -107,15 +122,13 @@ function New-xWait {
         [string]$JeaEndpointName
     )
 
-    New-Progress -Text 'Loading Session data...'
+    New-Progress -Text "Loading JEA endpoint '$JeaEndpointName'"
     New-UDElement -Tag div -Endpoint {
         Set-Item -Path Session:"Dyn_$($JeaEndpointName)_loaded" -Value $true
-        Set-Item -Path Session:"SessionData$($jeaEndpointName)" = Get-Random
+        #Set-Item -Path Session:"SessionData$($jeaEndpointName)" = Get-Random
 
-        #$user = 'contoso\install'
         $tasks = Get-JeaEndpointCapability -JeaEndpointName $jeaEndpointName -Username $user -ComputerName $cache:jeaServer
         Set-Item -Path Session:"tasks.$JeaEndpointName" -Value $tasks
-
         Sync-UDElement -Id "Dyn_$JeaEndpointName"
     }
 }
@@ -123,9 +136,9 @@ function New-xWait {
 Import-Module -Name Universal
 Import-Module -Name JeaDiscovery
 
-$user = 'contoso\install'
-$cred = New-Object pscredential($user, ('Somepass1' | ConvertTo-SecureString -AsPlainText -Force))
-$cache:jeaServer = 'fiweb1'
+#$user = 'contoso\install'
+#$cred = New-Object pscredential($user, ('Somepass1' | ConvertTo-SecureString -AsPlainText -Force))
+$cache:jeaServer = 'jWeb1'
 
 $cache:jeaEndpoints = Get-JeaEndpoint -ComputerName $cache:jeaServer
 
@@ -139,19 +152,18 @@ $cache:jeaEndpoints = Get-JeaEndpoint -ComputerName $cache:jeaServer
 $pages = foreach ($jeaEndpoint in $Cache:jeaEndpoints) {
     $jeaEndpointName = $jeaEndpoint.Name
     $onLoad = @"
-New-Progress -Text 'Loading Session data...'
-New-UDElement -Tag 'div' -Endpoint {
-    Start-Sleep 2
-    `$Session:Dyn_$($jeaEndpoint.Name)_loaded = `$true
-    `$Session:SessionData$jeaEndpointName = Get-Random
-    Sync-UDElement -Id Dyn_$($jeaEndpoint.Name)
-}
+#New-Progress -Text 'Loading Session data...'
+#New-UDElement -Tag 'div' -Endpoint {
+#    `$Session:Dyn_$($jeaEndpoint.Name)_loaded = `$true
+#    `$Session:SessionData$jeaEndpointName = Get-Random
+#    Sync-UDElement -Id Dyn_$($jeaEndpoint.Name)
+#}
 "@
 
     $finished = @"
-New-UDCard -Title "Page $jeaEndpointName" -Id "PageCard"
-`$data = `$Session:SessionData$jeaEndpointName
-New-UDTypography -Text "Some random text '`$data'"
+#New-UDCard -Title "Page $jeaEndpointName" -Id "PageCard"
+#`$data = `$Session:SessionData$jeaEndpointName
+#New-UDTypography -Text "Some random text '`$data'"
 "@
 
     $page = New-xPage -Name "$jeaEndpointName" -OnLoad ([scriptblock]::Create($onLoad)) -Finished ([scriptblock]::Create($finished)) -Store Session
