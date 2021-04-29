@@ -1,4 +1,4 @@
-﻿function New-Progress {
+function New-Progress {
     param(
         [string]$Text
     )
@@ -45,34 +45,27 @@ function New-xPage {
     New-UDPage -Name $Name -Content {
         New-UDTypography -Text "Endpoint name: $jeaEndpointName | PID: $PID | Username = $user"
 
-        if (-not $session:userPassword) {
-            [string]$passwordDynId = New-Guid
-            New-UDDynamic -Id $passwordDynId -Content {
-                #Wait-Debugger
-                if (-not $session:userPassword) {
-                    $header = New-UDCardHeader -Title 'Please provide your password'
-                    $body = New-UDCardBody -Content {
-                        New-UDForm -Content {
-                            New-UDTextbox -Id 'txtPassword' -Label Password -Type password
-                        } -OnSubmit {
-                            $session:userPassword = $EventData.txtPassword
-                            $cred = New-Object pscredential($user, ($session:userPassword | ConvertTo-SecureString -AsPlainText -Force))
-                            #Wait-Debugger
-                            $xmlFileName = $user -replace '\\', '_'
-                            $cred | Export-Clixml -Path "C:\UDCredentials\$xmlFileName.xml"
-                            #Wait-Debugger
-                            Sync-UDElement -Id $passwordDynId
-                        }
+        [string]$passwordDynId = New-Guid
+        New-UDDynamic -Id $passwordDynId -Content {
+            Wait-Debugger
+            if (-not $session:userPassword) {
+                $header = New-UDCardHeader -Title 'Please provide your password'
+                $body = New-UDCardBody -Content {
+                    New-UDForm -Content {
+                        New-UDTextbox -Id 'txtPassword' -Label Password
+                    } -OnSubmit {
+                        $session:userPassword = $EventData.txtTextfield
+                        Wait-Debugger
+                        Sync-UDElement -Id $passwordDynId
                     }
-
-                    New-UDCard -Body $body -Header $header
                 }
+
+                New-UDCard -Body $body -Header $header
             }
-        }
+        } -AutoRefresh 1
         
         New-UDDynamic -Id $id -Content {
-            #Wait-Debugger
-            Invoke-Ternary -Decider ([scriptblock]::Create($isloaded + '-and $session:userPassword')) -IfTrue {
+            Invoke-Ternary -Decider ([scriptblock]::Create($isloaded)) -IfTrue {
                 New-xTable -JeaEndpointName $jeaEndpointName
             } -IfFalse {
                 New-xWait -JeaEndpointName $jeaEndpointName
@@ -129,13 +122,7 @@ function New-xWait {
         [string]$JeaEndpointName
     )
 
-    if (-not $session:userPassword) {
-        New-Progress -Text "Please provide your password to access an admin endpoint."
-    }
-    else {
-        New-Progress -Text "Loading JEA endpoint '$JeaEndpointName'"
-    }
-
+    New-Progress -Text "Loading JEA endpoint '$JeaEndpointName'"
     New-UDElement -Tag div -Endpoint {
         Set-Item -Path Session:"Dyn_$($JeaEndpointName)_loaded" -Value $true
         #Set-Item -Path Session:"SessionData$($jeaEndpointName)" = Get-Random

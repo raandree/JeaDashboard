@@ -150,10 +150,15 @@ function New-xTaskForm {
             #Wait-Debugger
             $param | Export-Clixml -Path c:\param.xml
         
-            $adminSession = New-PSSession -ComputerName $cache:jeaServer -ConfigurationName $session:jeaEndpointName
-
-            Import-PSSession -Session $adminSession | Out-Null
             #Wait-Debugger
+            if (-not $session:adminSession -or $session:adminSession.ConfigurationName -ne $session:jeaEndpointName) {
+                $xmlFileName = $user -replace '\\', '_'
+                $cred = Import-Clixml -Path "C:\UDCredentials\$xmlFileName.xml"
+                $session:adminSession = New-PSSession -ComputerName $cache:jeaServer -ConfigurationName $session:jeaEndpointName -Credential $cred
+            }
+
+            Import-PSSession -Session $session:adminSession | Out-Null
+            
             $result = try {
                 & $session:taskName @param -ErrorAction Stop
             }
@@ -185,40 +190,50 @@ function New-xTaskForm {
 }
 
 Import-Module -Name Universal
-$user = 'contoso\install'
-$cred = New-Object pscredential($user, ('Somepass1' | ConvertTo-SecureString -AsPlainText -Force))
+#$user = 'contoso\install'
+#$cred = New-Object pscredential($user, ('Somepass1' | ConvertTo-SecureString -AsPlainText -Force))
 $cache:jeaServer = 'jWeb1'
 $jeaServer = 'jWeb1'
 
 New-UDDashboard -Title "JEA Task" -Content {
+    
+    if (-not $TaskName -or -not $JeaEndpointName) {
+        New-UDCard -Content {
+            "Either the parameter 'TaskName' or 'JeaEndpointName' is not defined."
+        }
+        return
+    }
 
-    $user = 'contoso\install'
+    #$user = 'contoso\install'
     $session:jeaEndpointName = $JeaEndpointName
     $session:taskName = $TaskName
     $session:parameterElements = New-Object System.Collections.ArrayList
-    #Wait-Debugger
+
     try {
         $task = Get-JeaEndpointCapability -ComputerName $jeaServer -JeaEndpointName $JeaEndpointName -Username $user -ErrorAction Stop | Where-Object Name -eq $TaskName
-    }
-    catch {
-        Write-Error "Task '$TaskName' not found in Jea Endpoint '$JeaEndpointName'. Error message: '$($_.Exception.Message)'" -ErrorAction Stop
-    }
 
-    $parameterSets = Get-FunctionParameterSet -ScriptBlock ([scriptblock]::Create($task.ScriptBlock))
-
-    New-UDCard -Content {
-        @"
-    TaskName        = $TaskName
-    JeaEndpointName = $JeaEndpointName
+        New-UDCard -Content {
+            @"
+    TaskName        = '$TaskName'
+    JeaEndpointName = '$JeaEndpointName'
+    UserName = '$user'
+    Password = '$session:userPassword'
 "@
-    }
+        }
 
-    New-UDTabs -Tabs {
-        foreach ($parameterSet in $parameterSets) {
-            #Wait-Debugger
-            New-UDTab -Id "tab_$parameterSet" -Text $parameterSet -Content {                
-                Invoke-Expression "New-xTaskForm -ParameterSetName $parameterSet"
+        $parameterSets = Get-FunctionParameterSet -ScriptBlock ([scriptblock]::Create($task.ScriptBlock))
+        New-UDTabs -Tabs {
+            foreach ($parameterSet in $parameterSets) {
+                #Wait-Debugger
+                New-UDTab -Id "tab_$parameterSet" -Text $parameterSet -Content {                
+                    Invoke-Expression "New-xTaskForm -ParameterSetName $parameterSet"
+                }
             }
         }
-    } #-RenderOnActive
+    }
+    catch {
+        New-UDCard -Content {
+            "Task '$TaskName' not found in Jea Endpoint '$JeaEndpointName'. Error message: '$($_.Exception.Message)'"
+        }
+    }
 }
