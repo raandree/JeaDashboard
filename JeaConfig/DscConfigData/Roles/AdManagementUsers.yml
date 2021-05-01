@@ -27,17 +27,56 @@ JeaRoles:
               [string]$Surname,
     
               [Parameter(Mandatory, ParameterSetName = 'Default')]
-              [securestring]$AccountPassword
+              [securestring]$AccountPassword,
+
+              [Parameter(Mandatory, ParameterSetName = 'FileUpload')]
+              [string]$FilePath,
+
+              [Parameter(ParameterSetName = 'FileUpload')]
+              [switch]$DoNotArchiveInputFile
           )
     
-          "New-ADUser -Path $Path -AccountPassword $AccountPassword -Name $Name -GivenName $GivenName -Surname $Surname -Enabled $true" | Out-File -FilePath C:\Commands.txt -Append
-          New-ADUser -Path $Path -AccountPassword $AccountPassword -Name $Name -GivenName $GivenName -Surname $Surname -Enabled $true
+          if ($PSCmdlet.ParameterSetName -eq 'Default') {
+              "New-ADUser -Path $Path -AccountPassword $AccountPassword -Name $Name -GivenName $GivenName -Surname $Surname -Enabled $true" | Out-File -FilePath C:\Commands.txt -Append
+              New-ADUser -Path $Path -AccountPassword $AccountPassword -Name $Name -GivenName $GivenName -Surname $Surname -Enabled $true
+          }
+          elseif ($PSCmdlet.ParameterSetName -eq 'FileUpload') {
+              $data = Import-Csv -Path $FilePath -Delimiter ';'
+              $data | New-ADUser
+              
+              if (-not $DoNotArchiveInputFile) {
+                  Remove-Item -Path $FilePath -Force
+              }
+              "Created $($data.Count) user accounts in AD."
+          }
+          else {
+              Write-Error 'Unknown parameter set'
+          }
       - Name: Remove-xAdUser
         ScriptBlock: |
           param (
               [Parameter(Mandatory, ParameterSetName = 'Default')]
-              [string]$Identity
+              [string]$Identity,
+
+              [Parameter(Mandatory, ParameterSetName = 'FileUpload')]
+              [string]$FilePath,
+
+              [Parameter(ParameterSetName = 'FileUpload')]
+              [switch]$DoNotArchiveInputFile
           )
     
-          "Remove-ADUser -Identity $Identity -Confirm:$false" | Out-File -FilePath C:\Commands.txt -Append
-          Remove-ADUser -Identity $Identity -Confirm:$false
+          if ($PSCmdlet.ParameterSetName -eq 'Default') {
+              "Remove-ADUser -Identity $Identity -Confirm:$false" | Out-File -FilePath C:\Commands.txt -Append
+              Remove-ADUser -Identity $Identity -Confirm:$false
+          }
+          elseif ($PSCmdlet.ParameterSetName -eq 'FileUpload') {
+              $data = Import-Csv -Path $FilePath -Delimiter ';'
+              $data.Identity | Remove-ADUser -Confirm:$false
+              if (-not $DoNotArchiveInputFile) {
+                  Remove-Item -Path $FilePath -Force
+              }
+              "Removed $($data.Count) user accounts from AD."
+          }
+          else {
+              Write-Error 'Unknown parameter set'
+          }
