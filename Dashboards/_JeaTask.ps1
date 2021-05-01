@@ -151,14 +151,14 @@ function New-xTaskForm {
             $param | Export-Clixml -Path c:\param.xml
         
             #Wait-Debugger
-            if (-not $session:adminSession -or $session:adminSession.ConfigurationName -ne $session:jeaEndpointName) {
+            if (-not $session:adminSession -or $session:adminSession.ConfigurationName -ne $session:jeaEndpointName -or $session:adminSession.State -eq 'Closed') {
                 $xmlFileName = $user -replace '\\', '_'
                 $cred = Import-Clixml -Path "C:\UDCredentials\$xmlFileName.xml"
                 $session:adminSession = New-PSSession -ComputerName $cache:jeaServer -ConfigurationName $session:jeaEndpointName -Credential $cred
             }
 
-            Import-PSSession -Session $session:adminSession | Out-Null
-            
+            Import-PSSession -Session $session:adminSession -AllowClobber | Out-Null
+
             $result = try {
                 & $session:taskName @param -ErrorAction Stop
             }
@@ -212,14 +212,29 @@ New-UDDashboard -Title "JEA Task" -Content {
     try {
         $task = Get-JeaEndpointCapability -ComputerName $jeaServer -JeaEndpointName $JeaEndpointName -Username $user -ErrorAction Stop | Where-Object Name -eq $TaskName
 
-        New-UDCard -Content {
-            @"
+        New-UDDynamic -Id headerInfo -Content {
+            New-UDCard -Content {
+                @"
     TaskName        = '$TaskName'
     JeaEndpointName = '$JeaEndpointName'
     UserName = '$user'
     Password = '$session:userPassword'
 "@
-        }
+    
+                $udButtonParams = @{
+                    Icon    = New-UDIcon -Icon trash
+                    Text    = 'Remove JEA Session'
+                    OnClick = {
+                        $session:adminSession | Remove-PSSession
+                    }
+                }
+                if (-not $session:adminSession -or $session:adminSession.State -eq 'Closed') {
+                    $udButtonParams.Disabled = $true
+                }
+                New-UDButton @udButtonParams
+            }
+
+        } -AutoRefresh -AutoRefreshInterval 2
 
         $parameterSets = Get-FunctionParameterSet -ScriptBlock ([scriptblock]::Create($task.ScriptBlock))
         New-UDTabs -Tabs {
