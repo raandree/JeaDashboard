@@ -24,7 +24,7 @@ function New-xTaskForm {
     )
     #Wait-Debugger
     $parameters = Get-FunctionParameter -ScriptBlock ([scriptblock]::Create($task.ScriptBlock)) -ParameterSetName $ParameterSetName
-    $parameterDefaultValues = Get-FunctionDefaultParameter -Scriptblock ([scriptblock]::Create($item.ScriptBlock))
+    $parameterDefaultValues =  Get-FunctionParameterWithDefaultValue -Scriptblock ([scriptblock]::Create($item.ScriptBlock))
     $session:parameterSetName = $ParameterSetName
     $session:currentTask = $task
     #Wait-Debugger

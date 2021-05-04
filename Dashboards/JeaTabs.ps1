@@ -1,10 +1,10 @@
-function Get-FunctionDefaultParameter {
+function  Get-FunctionParameterWithDefaultValue {
     <#
     .SYNOPSIS
     This is a function that will find all of the default parameter names and values from a given function.
     
     .EXAMPLE
-    PS> Get-FunctionDefaultParameter -FunctionName Get-Something
+    PS>  Get-FunctionParameterWithDefaultValue -FunctionName Get-Something
     
     .PARAMETER FuntionName
     A mandatory string parameter representing the name of the function to find default parameters to.
@@ -101,7 +101,7 @@ New-UDDashboard -Title "JeaTabs" -Content {
                             $item = $body | ConvertFrom-Json
 
                             $parameters = ($session:tasks."$($jeaEndpoint.Name)" | Where-Object Name -eq $item.Name).Parameters
-                            $parameterDefaultValues = Get-FunctionDefaultParameter -Scriptblock ([scriptblock]::Create($item.ScriptBlock))
+                            $parameterDefaultValues =  Get-FunctionParameterWithDefaultValue -Scriptblock ([scriptblock]::Create($item.ScriptBlock))
 
                             New-UDButton -Id "btn$($item.Name)" -Text $item.Name -OnClick {
 

@@ -86,7 +86,7 @@ function New-xTable {
             #$item = $body | ConvertFrom-Json
 
             $parameters = ($session:tasks.$JeaEndpointName | Where-Object Name -eq $item.Name).Parameters
-            $parameterDefaultValues = Get-FunctionDefaultParameter -Scriptblock ([scriptblock]::Create($item.ScriptBlock))
+            $parameterDefaultValues =  Get-FunctionParameterWithDefaultValue -Scriptblock ([scriptblock]::Create($item.ScriptBlock))
 
             New-UDButton -Id "btn$JeaEndpointName_$($item.Name)" -Text $item.Name -OnClick {
                 #$item = $body | ConvertFrom-Json
