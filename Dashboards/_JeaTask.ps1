@@ -24,7 +24,7 @@ function New-xTaskForm {
     )
     #Wait-Debugger
     $parameters = Get-FunctionParameter -ScriptBlock ([scriptblock]::Create($task.ScriptBlock)) -ParameterSetName $ParameterSetName
-    $parameterDefaultValues =  Get-FunctionParameterWithDefaultValue -Scriptblock ([scriptblock]::Create($item.ScriptBlock))
+    $parameterDefaultValues =  Get-FunctionParameterWithDefaultValue -Scriptblock ([scriptblock]::Create($task.ScriptBlock))
     $session:parameterSetName = $ParameterSetName
     $session:currentTask = $task
     #Wait-Debugger
@@ -56,10 +56,6 @@ function New-xTaskForm {
                             Type  = 'text'
                         }
 
-                        if ($parameterDefaultValues.ContainsKey($p.Key)) {
-                            $udTextboxParam.Value = $parameterDefaultValues[$p.Key]
-                        }
-
                         New-UDTextbox @udTextboxParam
 
                         #-------------------------------------------------------------
@@ -68,10 +64,6 @@ function New-xTaskForm {
                             Id    = "udElement_$($p.Key)_password"
                             Label = "$($p.Key) ($($p.value.parameterType.Name)) Password"
                             Type  = 'password'
-                        }
-
-                        if ($parameterDefaultValues.ContainsKey($p.Key)) {
-                            $udTextboxParam.Value = $parameterDefaultValues[$p.Key]
                         }
 
                         New-UDTextbox @udTextboxParam
@@ -87,6 +79,7 @@ function New-xTaskForm {
                             $udTextboxParam.Type = 'password'
                         }
 
+                        #Wait-Debugger
                         if ($parameterDefaultValues.ContainsKey($p.Key)) {
                             $udTextboxParam.Value = $parameterDefaultValues[$p.Key]
                         }
