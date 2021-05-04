@@ -90,13 +90,8 @@ function New-xTable {
     $columns = @(
         New-UDTableColumn -Property Name -Title Name
         New-UDTableColumn -Property Action -Render {
-            #$item = $body | ConvertFrom-Json
-
-            $parameters = ($session:tasks.$JeaEndpointName | Where-Object Name -eq $item.Name).Parameters
-            $parameterDefaultValues =  Get-FunctionParameterWithDefaultValue -Scriptblock ([scriptblock]::Create($item.ScriptBlock))
 
             New-UDButton -Id "btn$JeaEndpointName_$($item.Name)" -Text $item.Name -OnClick {
-                #$item = $body | ConvertFrom-Json
                 Invoke-UDRedirect -Url "http://localhost:5000/_JeaTask/Home?JeaEndpointName=$jeaEndpointName&TaskName=$($item.Name)" -OpenInNewWindow
             }
         }
