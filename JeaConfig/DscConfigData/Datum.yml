@@ -1,5 +1,6 @@
 ResolutionPrecedence:
   - AllNodes\$($Node.NodeName)
+  - Roles\DnsManagementRecords
   - Roles\AdManagementComputers
   - Roles\AdManagementUsers
   - Roles\AdManagementGroups
