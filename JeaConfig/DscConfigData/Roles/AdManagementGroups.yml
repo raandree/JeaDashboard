@@ -25,11 +25,15 @@ JeaRoles:
 
               [Parameter(ParameterSetName = 'Default')]
               [ValidateSet('DomainLocal', 'Universal', 'Global')]
-              [string]$GroupType
+              [string]$GroupScope = 'Security',
+
+              [Parameter(ParameterSetName = 'Default')]
+              [ValidateSet('Distribution', '')]
+              [string]$GroupCategory
           )
     
           "New-ADGroup -Path $Path -Name $Name -GroupType $GroupType -Description $Description" | Out-File -FilePath C:\Commands.txt -Append
-          New-ADGroup -Path $Path -Name $Name -GroupType $GroupType -Description $Description
+          New-ADGroup -Path $Path -Name $Name -GroupScope $GroupScope -GroupCategory $GroupCategory -Description $Description
       - Name: Remove-xAdGroup
         ScriptBlock: |
           param (
