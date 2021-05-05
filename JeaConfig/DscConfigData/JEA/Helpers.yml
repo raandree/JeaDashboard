@@ -151,6 +151,44 @@ FilesAndFolders:
             }
         }
 
+        function Get-FunctionParameterValidateSetValues {
+            [CmdletBinding()]
+            [OutputType([hashtable])]
+            param
+            (
+                [Parameter(Mandatory, ParameterSetName = 'FunctionName')]
+                [ValidateNotNullOrEmpty()]
+                [string]$FunctionName,
+
+                [Parameter(Mandatory, ParameterSetName = 'Scriptblock')]
+                [ValidateNotNullOrEmpty()]
+                [scriptblock]$Scriptblock
+            )
+            try {
+                $ast = if ($FunctionName) {
+                    (Get-Command -Name $FunctionName).ScriptBlock.Ast
+                }
+                else {
+                    $Scriptblock.Ast
+                }
+                
+                if (-not $ast) {
+                    return
+                }
+
+                $ht = @{}
+                $params = $ast.FindAll({ $args[0] -is [System.Management.Automation.Language.ParameterAst] }, $true) | Where-Object { $_.Attributes | Where-Object { $_.TypeName.Name -eq 'ValidateSet' } }
+                foreach ($param in $params) {
+                    $ht.Add($param.Name.VariablePath.UserPath, ($param.Attributes | Where-Object { $_.TypeName.Name -eq 'ValidateSet' }).PositionalArguments.Value)
+                }
+
+                $ht
+            }
+            catch {
+                Write-Error -Message $_.Exception.Message
+            }
+        }
+
         function Get-FunctionParameterSet {
             <#
                     .SYNOPSIS

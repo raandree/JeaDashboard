@@ -36,8 +36,8 @@ function  Get-FunctionParameterWithDefaultValue {
         $select = @{ Name = 'Name'; Expression = { $_.Name.VariablePath.UserPath } },
         @{ Name = 'Value'; Expression = { $_.DefaultValue.Extent.Text -replace "`"|'" } }
         
-        $ht = @{ }
-        @($ast.FindAll( { $args[0] -is [System.Management.Automation.Language.ParameterAst] }, $true) | Where-Object { $_.DefaultValue } | Select-Object -Property $select).ForEach( {
+        $ht = @{}
+        @($ast.FindAll({ $args[0] -is [System.Management.Automation.Language.ParameterAst] }, $true) | Where-Object { $_.DefaultValue } | Select-Object -Property $select).ForEach( {
                 $ht[$_.Name] = $_.Value    
             })
         $ht
