@@ -22,12 +22,13 @@ function New-xTaskForm {
         [Parameter(Mandatory)]
         [string]$ParameterSetName
     )
-    #Wait-Debugger
+
     $parameters = Get-FunctionParameter -ScriptBlock ([scriptblock]::Create($task.ScriptBlock)) -ParameterSetName $ParameterSetName
     $parameterDefaultValues =  Get-FunctionParameterWithDefaultValue -Scriptblock ([scriptblock]::Create($task.ScriptBlock))
+    $parameterValidateSetValues = Get-FunctionParameterValidateSetValues -Scriptblock ([scriptblock]::Create($task.ScriptBlock))
     $session:parameterSetName = $ParameterSetName
     $session:currentTask = $task
-    #Wait-Debugger
+
     New-UDDynamic -Id "dyn_$($session:parameterSetName)" -Content {
         New-UDForm -Content {
             if ($Session:formProcessing) {
@@ -37,7 +38,7 @@ function New-xTaskForm {
                 $alParameters = New-Object System.Collections.ArrayList
                 $alParameters.AddRange(@($parameters))
                 foreach ($p in $alParameters) {
-                    #Wait-Debugger
+
                     $newElement = if ($p.Value.Name -eq 'FilePath' -and $ParameterSetName -eq 'FileUpload') {
                         New-UDUpload -Text 'File Upload' -OnUpload {
                             $Data = $Body | ConvertFrom-Json
@@ -69,22 +70,40 @@ function New-xTaskForm {
                         New-UDTextbox @udTextboxParam
                     }
                     else {
-                        $udTextboxParam = @{
-                            Id    = "udElement_$($p.Key)"
-                            Label = "$($p.Key) ($($p.value.parameterType.Name))"
-                            Type  = 'text'
-                        }
+                        if ($parameterValidateSetValues.ContainsKey($p.Key)) {
+                            $values = $parameterValidateSetValues[$p.Key]
+                            
+                            $options = foreach ($value in $values) {
+                                "New-UDSelectOption -Name $value -Value $value;"
+                            }
+                            $options = [scriptblock]::Create($options)
 
-                        if ($p.value.parameterType.Name -eq 'SecureString') {
-                            $udTextboxParam.Type = 'password'
+                            $udSelectParam = @{
+                                Id    = "udElement_$($p.Key)"
+                                Label = "$($p.Key) ($($p.value.parameterType.Name))"
+                                Option = $options
+                            }
+                            
+                            New-UDSelect @udSelectParam
                         }
+                        else {
+                            $udTextboxParam = @{
+                                Id    = "udElement_$($p.Key)"
+                                Label = "$($p.Key) ($($p.value.parameterType.Name))"
+                                Type  = 'text'
+                            }
+    
+                            if ($p.value.parameterType.Name -eq 'SecureString') {
+                                $udTextboxParam.Type = 'password'
+                            }
+    
+                            
+                            if ($parameterDefaultValues.ContainsKey($p.Key)) {
+                                $udTextboxParam.Value = $parameterDefaultValues[$p.Key]
+                            }
 
-                        #Wait-Debugger
-                        if ($parameterDefaultValues.ContainsKey($p.Key)) {
-                            $udTextboxParam.Value = $parameterDefaultValues[$p.Key]
+                            New-UDTextbox @udTextboxParam
                         }
-
-                        New-UDTextbox @udTextboxParam
                     }
 
                     $newElement | Add-Member -Name ParameterSetName -Value $ParameterSetName -Type NoteProperty -PassThru
@@ -101,7 +120,7 @@ function New-xTaskForm {
             $alParameterElements.AddRange(@($session:parameterElements))
 
             $param = @{}
-            #Wait-Debugger
+            
             foreach ($parameterElement in ($session:parameterElements | Where-Object ParameterSetName -eq $currentParameterSetName)) {
 
                 $getUDElementRetryCount = 3
@@ -113,9 +132,8 @@ function New-xTaskForm {
                     Start-Sleep -Milliseconds 100
                 }
                 $parameterName = $parameterElement.id -replace 'udElement_', ''
-                #Wait-Debugger
-                switch ($parameterElement) {
-
+                
+                switch ($parameterElement) {                    
                     { $_.type -eq 'mu-textbox' } {
                         if ($_.value) { 
                             if ($_.textType -eq 'password') {
@@ -132,18 +150,22 @@ function New-xTaskForm {
                         }
                     }
                     { $_.type -eq 'mu-upload' } {
-                        #Wait-Debugger
                         if ($_.value) {
                             $param.Add($parameterName, "C:\Temp\$($session:currentTask.Name)\$($_.value.name)")
+                        }
+                    }
+                    { $_.type -eq 'mu-select' } {
+                        if ($_.value) { 
+                            $param.Add($parameterName, $_.value)
                         }
                     }
                 }
             }
 
-            #Wait-Debugger
+
             $param | Export-Clixml -Path c:\param.xml
         
-            #Wait-Debugger
+
             if (-not $session:adminSession -or $session:adminSession.ConfigurationName -ne $session:jeaEndpointName -or $session:adminSession.State -eq 'Closed') {
                 $xmlFileName = $user -replace '\\', '_'
                 $cred = Import-Clixml -Path "C:\UDCredentials\$xmlFileName.xml"
@@ -172,7 +194,6 @@ function New-xTaskForm {
                 }
                 else {
                     Show-UDModal -Content {
-                        #Wait-Debugger
                         New-UDTypography -Text 'The result is:' -Variant h5
                         New-UDTypography -Text $result -Variant h5
                     } -FullWidth
@@ -232,7 +253,6 @@ New-UDDashboard -Title "JEA Task" -Content {
         $parameterSets = Get-FunctionParameterSet -ScriptBlock ([scriptblock]::Create($task.ScriptBlock))
         New-UDTabs -Tabs {
             foreach ($parameterSet in $parameterSets) {
-                #Wait-Debugger
                 New-UDTab -Id "tab_$parameterSet" -Text $parameterSet -Content {                
                     Invoke-Expression "New-xTaskForm -ParameterSetName $parameterSet"
                 }
