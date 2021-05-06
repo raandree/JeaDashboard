@@ -24,7 +24,7 @@ function New-xTaskForm {
     )
 
     $parameters = Get-FunctionParameter -ScriptBlock ([scriptblock]::Create($task.ScriptBlock)) -ParameterSetName $ParameterSetName
-    $parameterDefaultValues =  Get-FunctionParameterWithDefaultValue -Scriptblock ([scriptblock]::Create($task.ScriptBlock))
+    $parameterDefaultValues = Get-FunctionParameterWithDefaultValue -Scriptblock ([scriptblock]::Create($task.ScriptBlock))
     $parameterValidateSetValues = Get-FunctionParameterValidateSetValues -Scriptblock ([scriptblock]::Create($task.ScriptBlock))
     $session:parameterSetName = $ParameterSetName
     $session:currentTask = $task
@@ -53,7 +53,7 @@ function New-xTaskForm {
                     elseif ($p.Value.ParameterType.Name -eq 'PSCredential') {
                         $udTextboxParam = @{
                             Id    = "udElement_$($p.Key)_username"
-                            Label = "$($p.Key) ($($p.value.parameterType.Name)) Username"
+                            Label = "$($p.Key) ($($p.Value.parameterType.Name)) Username"
                             Type  = 'text'
                         }
 
@@ -63,7 +63,7 @@ function New-xTaskForm {
 
                         $udTextboxParam = @{
                             Id    = "udElement_$($p.Key)_password"
-                            Label = "$($p.Key) ($($p.value.parameterType.Name)) Password"
+                            Label = "$($p.Key) ($($p.Value.parameterType.Name)) Password"
                             Type  = 'password'
                         }
 
@@ -79,8 +79,8 @@ function New-xTaskForm {
                             $options = [scriptblock]::Create($options)
 
                             $udSelectParam = @{
-                                Id    = "udElement_$($p.Key)"
-                                Label = "$($p.Key) ($($p.value.parameterType.Name))"
+                                Id     = "udElement_$($p.Key)"
+                                Label  = "$($p.Key) ($($p.Value.parameterType.Name))"
                                 Option = $options
                             }
                             
@@ -88,12 +88,17 @@ function New-xTaskForm {
                         }
                         else {
                             $udTextboxParam = @{
-                                Id    = "udElement_$($p.Key)"
-                                Label = "$($p.Key) ($($p.value.parameterType.Name))"
-                                Type  = 'text'
+                                Id        = "udElement_$($p.Key)"
+                                Label     = "$($p.Key) ($($p.Value.parameterType.Name))"
+                                Type      = 'text'
+                                FullWidth = $true
+                            }
+
+                            if (($p.Value.Attributes | Where-Object { $_ -is [System.Management.Automation.ParameterAttribute] }).Mandatory) {
+                                $udTextboxParam.Icon = New-UDIcon -Icon exclamation_triangle
                             }
     
-                            if ($p.value.parameterType.Name -eq 'SecureString') {
+                            if ($p.Value.parameterType.Name -eq 'SecureString') {
                                 $udTextboxParam.Type = 'password'
                             }
     
@@ -135,12 +140,12 @@ function New-xTaskForm {
                 
                 switch ($parameterElement) {                    
                     { $_.type -eq 'mu-textbox' } {
-                        if ($_.value) { 
+                        if ($_.Value) { 
                             if ($_.textType -eq 'password') {
-                                $param.Add($parameterName, ($_.value | ConvertTo-SecureString -AsPlainText -Force))
+                                $param.Add($parameterName, ($_.Value | ConvertTo-SecureString -AsPlainText -Force))
                             }
                             else {
-                                $param.Add($parameterName, $_.value)
+                                $param.Add($parameterName, $_.Value)
                             }
                         }
                     }
@@ -150,13 +155,13 @@ function New-xTaskForm {
                         }
                     }
                     { $_.type -eq 'mu-upload' } {
-                        if ($_.value) {
-                            $param.Add($parameterName, "C:\Temp\$($session:currentTask.Name)\$($_.value.name)")
+                        if ($_.Value) {
+                            $param.Add($parameterName, "C:\Temp\$($session:currentTask.Name)\$($_.Value.name)")
                         }
                     }
                     { $_.type -eq 'mu-select' } {
-                        if ($_.value) { 
-                            $param.Add($parameterName, $_.value)
+                        if ($_.Value) { 
+                            $param.Add($parameterName, $_.Value)
                         }
                     }
                 }
