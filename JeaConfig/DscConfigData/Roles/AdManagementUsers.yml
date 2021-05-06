@@ -15,7 +15,7 @@ JeaRoles:
         ScriptBlock: |
           param (
               [Parameter(ParameterSetName = 'Default')]
-              [string]$Path = "CN=Users,DC=contoso,DC=com",
+              [string]$Path = "CN=Users,DC=contoso,DC=net",
               
               [Parameter(Mandatory, ParameterSetName = 'Default')]
               [string]$Name,
@@ -37,8 +37,8 @@ JeaRoles:
           )
     
           if ($PSCmdlet.ParameterSetName -eq 'Default') {
-              "New-ADUser -Path $Path -AccountPassword $AccountPassword -Name $Name -GivenName $GivenName -Surname $Surname -Enabled $true" | Out-File -FilePath C:\Commands.txt -Append
-              New-ADUser -Path $Path -AccountPassword $AccountPassword -Name $Name -GivenName $GivenName -Surname $Surname -Enabled $true
+              New-ADUser @PSBoundParameters
+              "User account '$Name' created in '$Path'"
           }
           elseif ($PSCmdlet.ParameterSetName -eq 'FileUpload') {
               $data = Import-Csv -Path $FilePath -Delimiter ';'
@@ -66,8 +66,8 @@ JeaRoles:
           )
     
           if ($PSCmdlet.ParameterSetName -eq 'Default') {
-              "Remove-ADUser -Identity $Identity -Confirm:$false" | Out-File -FilePath C:\Commands.txt -Append
               Remove-ADUser -Identity $Identity -Confirm:$false
+              "User account '$Name' has been removed."
           }
           elseif ($PSCmdlet.ParameterSetName -eq 'FileUpload') {
               $data = Import-Csv -Path $FilePath -Delimiter ';'
