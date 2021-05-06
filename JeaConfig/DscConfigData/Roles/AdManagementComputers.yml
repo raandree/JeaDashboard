@@ -15,7 +15,7 @@ JeaRoles:
         ScriptBlock: |
           param (
               [Parameter(ParameterSetName = 'Default')]
-              [string]$Path = "CN=Users,DC=contoso,DC=net",
+              [string]$Path = "CN=Users,DC=contoso,DC=com",
               
               [Parameter(Mandatory, ParameterSetName = 'Default')]
               [string]$Name
