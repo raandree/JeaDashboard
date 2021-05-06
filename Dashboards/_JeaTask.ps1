@@ -140,7 +140,7 @@ function New-xTaskForm {
                 
                 switch ($parameterElement) {                    
                     { $_.type -eq 'mu-textbox' } {
-                        if ($_.Value) { 
+                        if ($_.Value) {
                             if ($_.textType -eq 'password') {
                                 $param.Add($parameterName, ($_.Value | ConvertTo-SecureString -AsPlainText -Force))
                             }
@@ -209,8 +209,6 @@ function New-xTaskForm {
 }
 
 Import-Module -Name Universal
-#$user = 'contoso\install'
-#$cred = New-Object pscredential($user, ('Somepass1' | ConvertTo-SecureString -AsPlainText -Force))
 $cache:jeaServer = 'jWeb1'
 $jeaServer = 'jWeb1'
 
@@ -223,7 +221,6 @@ New-UDDashboard -Title "JEA Task" -Content {
         return
     }
 
-    #$user = 'contoso\install'
     $session:jeaEndpointName = $JeaEndpointName
     $session:taskName = $TaskName
     $session:parameterElements = New-Object System.Collections.ArrayList
