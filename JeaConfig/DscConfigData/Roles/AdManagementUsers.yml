@@ -15,7 +15,7 @@ JeaRoles:
         ScriptBlock: |
           param (
               [Parameter(ParameterSetName = 'Default')]
-              [string]$Path = "CN=Users,$((Get-ADRootDSE).defaultNamingContext)",
+              [string]$Path = "CN=Users,DC=contoso,DC=net",
               
               [Parameter(Mandatory, ParameterSetName = 'Default')]
               [string]$Name,
