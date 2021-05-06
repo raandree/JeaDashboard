@@ -24,12 +24,12 @@ JeaRoles:
               [string]$Description,
 
               [Parameter(ParameterSetName = 'Default')]
-              [ValidateSet('DomainLocal', 'Universal', 'Global')]
+              [ValidateSet('Global', 'DomainLocal', 'Universal')]
               [string]$GroupScope = 'Global',
 
               [Parameter(ParameterSetName = 'Default')]
-              [ValidateSet('Distribution', 'Security')]
-              [string]$GroupCategory = 'Security'
+              [ValidateSet('Security', 'Distribution')]
+              [string]$GroupCategory
           )
     
           "New-ADGroup -Path $Path -Name $Name -GroupType $GroupType -Description $Description" | Out-File -FilePath C:\Commands.txt -Append
