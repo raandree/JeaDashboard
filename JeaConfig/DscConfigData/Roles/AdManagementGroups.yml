@@ -28,7 +28,7 @@ JeaRoles:
               [string]$GroupScope = 'Security',
 
               [Parameter(ParameterSetName = 'Default')]
-              [ValidateSet('Distribution', '')]
+              [ValidateSet('Distribution', 'Security')]
               [string]$GroupCategory
           )
     
