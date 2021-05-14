@@ -26,6 +26,10 @@ AddsOrgUnitsAndGroups:
       Description: JEA Group
       GroupScope: Global
       Path: OU=Admin
+    - GroupName: DnsAdminRecords
+      Description: JEA Group
+      GroupScope: Global
+      Path: OU=Admin
 
 AddsDomainPrincipals:
   DomainDN: DC=contoso,DC=com
