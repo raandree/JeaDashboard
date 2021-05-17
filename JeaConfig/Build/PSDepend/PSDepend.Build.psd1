@@ -16,4 +16,5 @@
     Datum                 = 'latest'
     'powershell-yaml'     = 'latest'
     'Datum.ProtectedData' = 'latest'
+    PSFramework           = 'latest'
 }
