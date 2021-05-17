@@ -12,7 +12,18 @@ JeaRoles:
       FunctionDefinitions:
       - Name: Get-JeaPSSessionConfiguration
         ScriptBlock: |
-          Get-PSSessionConfiguration | Where-Object Name -notlike microsoft*
+          $configs = Get-PSSessionConfiguration | Where-Object Name -notlike microsoft*
+
+          foreach ($config in $configs) {
+              $newRoleDefinition = @{}
+              $config.RoleDefinitions.GetEnumerator() | ForEach-Object {
+                  $newRoleDefinition.Add($_.Name, $_.Value.RoleCapabilities)
+              }
+              $config.RoleDefinitions = $newRoleDefinition
+          }
+
+          $configs
+
       - Name: Get-JeaPSSessionCapability
         ScriptBlock: |
               param(
