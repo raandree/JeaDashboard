@@ -1,0 +1,2 @@
+﻿New-PSUDashboard -Name "_JeaTask" -FilePath "_JeaTask.ps1" -BaseUrl "/_JeaTask" -Framework "UniversalDashboard:Latest" -SessionTimeout 0 -AutoDeploy 
+New-PSUDashboard -Name "_JeaMenu" -FilePath "_JeaMenu.ps1" -BaseUrl "/_JeaMenu" -Framework "UniversalDashboard:Latest" -Authenticated -SessionTimeout 0 -AutoDeploy 
