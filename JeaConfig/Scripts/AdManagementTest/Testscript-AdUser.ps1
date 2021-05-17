@@ -6,7 +6,7 @@
 
 {
     "Department":  "WinSrv", 
-    "JeaRole":  "AdManagementComputer",       
+    "JeaRole":  "AdManagementUsers",       
     "MenuLevel":  {
                       "Parent":  "Root",  
                       "Current":  "WinSrv"

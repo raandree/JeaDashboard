@@ -6,13 +6,13 @@
 
 {
     "Department":  "WinSrv", 
-    "JeaRole":  "AdManagementUser",       
+    "JeaRole":  "AdManagementUsers",       
     "MenuLevel":  {
                       "Parent":  "Root",  
                       "Current":  "WinSrv"
                   },
     "GUID": "c6f346d9-86db-44f7-8d9c-11cb81638a3e",
-	"ModulesToImport": ["ActiveDirectory", "TestModule"]
+	"ModulesToImport": ["ActiveDirectory"]
 }
 
 .INPUTS

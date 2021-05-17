@@ -5,8 +5,9 @@
 .DESCRIPTION
 
 {
+    "Name": "Testscript-AdComputer",
     "Department":  "WinSrv", 
-    "JeaRole":  "AdManagementUser",       
+    "JeaRole":  "AdManagementComputers",       
     "MenuLevel":  {
                       "Parent":  "Root",  
                       "Current":  "WinSrv"
