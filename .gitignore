@@ -1,5 +1,4 @@
 JeaConfig/BuildOutput/*
+!JeaConfig/BuildOutput/Modules
 
-#JeaConfig/DscConfigurations/*
-#JeaConfig/DscResources/*
 Lab/testResults.xml
