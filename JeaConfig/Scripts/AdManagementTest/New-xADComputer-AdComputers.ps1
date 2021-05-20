@@ -5,6 +5,7 @@
 .DESCRIPTION
 
 {
+    "Name": "New-xADComputer",
     "Department":  "WinSrv", 
     "JeaRole":  "AdManagementComputers",       
     "MenuLevel":  {
