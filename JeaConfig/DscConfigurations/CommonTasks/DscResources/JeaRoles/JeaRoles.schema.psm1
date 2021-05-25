@@ -6,7 +6,7 @@ configuration JeaRoles {
 
     Import-Module JeaDsc
     Import-DscResource -ModuleName JeaDsc
-    $pattern = '\\(?<Module>\w+)\\RoleCapabilities\\(?<RoleFile>\w+)\.psrc'
+    $pattern = '\\(?<Module>\w+)\\RoleCapabilities\\(?<RoleFile>[-\w]+)\.psrc'
 
     foreach ($role in $Roles) {
         if (-not $role.ContainsKey('Ensure')) {
