@@ -1,11 +1,7 @@
 ResolutionPrecedence:
   - AllNodes\$($Node.NodeName)
-  - Roles\Demo
-  - Roles\DhcpManagement
-  - Roles\DnsManagementRecords
-  - Roles\AdManagementComputers
-  - Roles\AdManagementUsers
-  - Roles\AdManagementGroups
+  - Roles\q-SPD_DashboardAD
+  - Roles\q-spd_DashBoardCS
   - Roles\JeaCapability
   - JEA\Endpoints
   - JEA\Helpers

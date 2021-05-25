@@ -1,171 +1,28 @@
-Configurations:
-  - AddsOrgUnitsAndGroups
+﻿Configurations:
   - JeaEndpoints
-  - AddsDomainPrincipals
-
-AddsOrgUnitsAndGroups:
-  DomainDN: DC=contoso,DC=com
-  PsDscRunAsCredential : '[ENC=PE9ianMgVmVyc2lvbj0iMS4xLjAuMSIgeG1sbnM9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vcG93ZXJzaGVsbC8yMDA0LzA0Ij4NCiAgPE9iaiBSZWZJZD0iMCI+DQogICAgPFROIFJlZklkPSIwIj4NCiAgICAgIDxUPlN5c3RlbS5NYW5hZ2VtZW50LkF1dG9tYXRpb24uUFNDdXN0b21PYmplY3Q8L1Q+DQogICAgICA8VD5TeXN0ZW0uT2JqZWN0PC9UPg0KICAgIDwvVE4+DQogICAgPE1TPg0KICAgICAgPE9iaiBOPSJLZXlEYXRhIiBSZWZJZD0iMSI+DQogICAgICAgIDxUTiBSZWZJZD0iMSI+DQogICAgICAgICAgPFQ+U3lzdGVtLk9iamVjdFtdPC9UPg0KICAgICAgICAgIDxUPlN5c3RlbS5BcnJheTwvVD4NCiAgICAgICAgICA8VD5TeXN0ZW0uT2JqZWN0PC9UPg0KICAgICAgICA8L1ROPg0KICAgICAgICA8TFNUPg0KICAgICAgICAgIDxPYmogUmVmSWQ9IjIiPg0KICAgICAgICAgICAgPFROUmVmIFJlZklkPSIwIiAvPg0KICAgICAgICAgICAgPE1TPg0KICAgICAgICAgICAgICA8UyBOPSJIYXNoIj4xRUZBNTk3QUVERTAyNkNCMDg2RTY4NTIwRjVDNjM2QTc3Q0U1QTNDMDA4RjhENkUxQjBEQjYyMkM5NzFCRkEyPC9TPg0KICAgICAgICAgICAgICA8STMyIE49Ikl0ZXJhdGlvbkNvdW50Ij41MDAwMDwvSTMyPg0KICAgICAgICAgICAgICA8QkEgTj0iS2V5Ij5KbHZqZDBsc2F0VDZxdFNBRXlQSGFEelhrRVJLVS82Z29rQ3QzZm4zRE1VNndSbTFiMy9RcFRBTDRBNk9BSXlsPC9CQT4NCiAgICAgICAgICAgICAgPEJBIE49Ikhhc2hTYWx0Ij5IMzYxc2ZzUENEVXk1Ri92NUN2eno1VTVQVk5KNjhuUWtQTFd5RVltRU44PTwvQkE+DQogICAgICAgICAgICAgIDxCQSBOPSJTYWx0Ij5jcHE3V1ZFRHVwWVhVbVlDbGVRWE0yVWkxN2lFa0s2ZTFrWTYyT2ZONXRJPTwvQkE+DQogICAgICAgICAgICAgIDxCQSBOPSJJViI+Q1VsZWIrbStjbHUvYVk0MmE1aWVTNWlwQWl5NEo1T2hZTmVUR1BSUkhCST08L0JBPg0KICAgICAgICAgICAgPC9NUz4NCiAgICAgICAgICA8L09iaj4NCiAgICAgICAgPC9MU1Q+DQogICAgICA8L09iaj4NCiAgICAgIDxCQSBOPSJDaXBoZXJUZXh0Ij5oLzlodnE5S2ViSnROUmE2NWc5NDVmUDlLU0FwRmYxZ3loaHBYc0s2TFBPZTF3WVRRaFFaTGRxN2lnYlJhWloydU9EeWF0d3diUFVGbFZRVWd2Tm5YWTUxNjUrbjhGYkZOUjd6bTlBWHVNVT08L0JBPg0KICAgICAgPEJBIE49IkhNQUMiPnE5R3BaZlp5U3pHaDByME1uaE1RM3V3S3ZudkdobnJxeFVneG9jS0RRUkU9PC9CQT4NCiAgICAgIDxTIE49IlR5cGUiPlN5c3RlbS5NYW5hZ2VtZW50LkF1dG9tYXRpb24uUFNDcmVkZW50aWFsPC9TPg0KICAgIDwvTVM+DQogIDwvT2JqPg0KPC9PYmpzPg==]'
-  OrgUnits:
-    - Name: Admin
-      Path: DC=contoso,DC=com
-
-  Groups:
-    - GroupName: AdManagementAll
-      Description: JEA Group
-      GroupScope: Global
-      Path: OU=Admin
-      Members:
-        - Install
-        - Administrator
-    - GroupName: AdManagementUsers
-      Description: JEA Group
-      GroupScope: Global
-      Path: OU=Admin
-    - GroupName: AdManagementComputers
-      Description: JEA Group
-      GroupScope: Global
-      Path: OU=Admin
-    - GroupName: DnsAdminRecords
-      Description: JEA Group
-      GroupScope: Global
-      Path: OU=Admin
-
-AddsDomainPrincipals:
-  DomainDN: DC=contoso,DC=com
-  PsDscRunAsCredential : '[ENC=PE9ianMgVmVyc2lvbj0iMS4xLjAuMSIgeG1sbnM9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vcG93ZXJzaGVsbC8yMDA0LzA0Ij4NCiAgPE9iaiBSZWZJZD0iMCI+DQogICAgPFROIFJlZklkPSIwIj4NCiAgICAgIDxUPlN5c3RlbS5NYW5hZ2VtZW50LkF1dG9tYXRpb24uUFNDdXN0b21PYmplY3Q8L1Q+DQogICAgICA8VD5TeXN0ZW0uT2JqZWN0PC9UPg0KICAgIDwvVE4+DQogICAgPE1TPg0KICAgICAgPE9iaiBOPSJLZXlEYXRhIiBSZWZJZD0iMSI+DQogICAgICAgIDxUTiBSZWZJZD0iMSI+DQogICAgICAgICAgPFQ+U3lzdGVtLk9iamVjdFtdPC9UPg0KICAgICAgICAgIDxUPlN5c3RlbS5BcnJheTwvVD4NCiAgICAgICAgICA8VD5TeXN0ZW0uT2JqZWN0PC9UPg0KICAgICAgICA8L1ROPg0KICAgICAgICA8TFNUPg0KICAgICAgICAgIDxPYmogUmVmSWQ9IjIiPg0KICAgICAgICAgICAgPFROUmVmIFJlZklkPSIwIiAvPg0KICAgICAgICAgICAgPE1TPg0KICAgICAgICAgICAgICA8UyBOPSJIYXNoIj4xRUZBNTk3QUVERTAyNkNCMDg2RTY4NTIwRjVDNjM2QTc3Q0U1QTNDMDA4RjhENkUxQjBEQjYyMkM5NzFCRkEyPC9TPg0KICAgICAgICAgICAgICA8STMyIE49Ikl0ZXJhdGlvbkNvdW50Ij41MDAwMDwvSTMyPg0KICAgICAgICAgICAgICA8QkEgTj0iS2V5Ij5KbHZqZDBsc2F0VDZxdFNBRXlQSGFEelhrRVJLVS82Z29rQ3QzZm4zRE1VNndSbTFiMy9RcFRBTDRBNk9BSXlsPC9CQT4NCiAgICAgICAgICAgICAgPEJBIE49Ikhhc2hTYWx0Ij5IMzYxc2ZzUENEVXk1Ri92NUN2eno1VTVQVk5KNjhuUWtQTFd5RVltRU44PTwvQkE+DQogICAgICAgICAgICAgIDxCQSBOPSJTYWx0Ij5jcHE3V1ZFRHVwWVhVbVlDbGVRWE0yVWkxN2lFa0s2ZTFrWTYyT2ZONXRJPTwvQkE+DQogICAgICAgICAgICAgIDxCQSBOPSJJViI+Q1VsZWIrbStjbHUvYVk0MmE1aWVTNWlwQWl5NEo1T2hZTmVUR1BSUkhCST08L0JBPg0KICAgICAgICAgICAgPC9NUz4NCiAgICAgICAgICA8L09iaj4NCiAgICAgICAgPC9MU1Q+DQogICAgICA8L09iaj4NCiAgICAgIDxCQSBOPSJDaXBoZXJUZXh0Ij5oLzlodnE5S2ViSnROUmE2NWc5NDVmUDlLU0FwRmYxZ3loaHBYc0s2TFBPZTF3WVRRaFFaTGRxN2lnYlJhWloydU9EeWF0d3diUFVGbFZRVWd2Tm5YWTUxNjUrbjhGYkZOUjd6bTlBWHVNVT08L0JBPg0KICAgICAgPEJBIE49IkhNQUMiPnE5R3BaZlp5U3pHaDByME1uaE1RM3V3S3ZudkdobnJxeFVneG9jS0RRUkU9PC9CQT4NCiAgICAgIDxTIE49IlR5cGUiPlN5c3RlbS5NYW5hZ2VtZW50LkF1dG9tYXRpb24uUFNDcmVkZW50aWFsPC9TPg0KICAgIDwvTVM+DQogIDwvT2JqPg0KPC9PYmpzPg==]'
-
-  KDSKey:
-    EffectiveTime: 01/01/2025 00:00
-    AllowUnsafeEffectiveTime: true #Use with caution
-  ManagedServiceAccounts:
-    - ServiceAccountName: DhcpAdmin
-      AccountType: Group
-      MemberOf:
-        - Domain Admins
-      ManagedPasswordPrincipals:
-        - jWeb1$
-        - jWeb2$
-
-    - ServiceAccountName: AdAdmin
-      AccountType: Group
-      MemberOf:
-        - Domain Admins
-      ManagedPasswordPrincipals:
-        - jWeb1$
-        - jWeb2$
-
-    - ServiceAccountName: GMSA1
-      AccountType: Group
-      MemberOf:
-        - Domain Users
-      ManagedPasswordPrincipals:
-        - jWeb1$
-        - jWeb2$
-
-    - ServiceAccountName: GMSA2
-      AccountType: Group
-      MemberOf:
-        - Domain Users
-      ManagedPasswordPrincipals:
-        - jWeb1$
-        - jWeb2$
-    
-    - ServiceAccountName: DnsAdmin
-      AccountType: Group
-      MemberOf:
-        - DnsAdmins
-      ManagedPasswordPrincipals:
-        - jWeb1$
-        - jWeb2$
-#  Users:
-#    - UserName: AdAdminService
-#      DomainName: contoso
-#      Password: '[ENC=PE9ianMgVmVyc2lvbj0iMS4xLjAuMSIgeG1sbnM9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vcG93ZXJzaGVsbC8yMDA0LzA0Ij4NCiAgPE9iaiBSZWZJZD0iMCI+DQogICAgPFROIFJlZklkPSIwIj4NCiAgICAgIDxUPlN5c3RlbS5NYW5hZ2VtZW50LkF1dG9tYXRpb24uUFNDdXN0b21PYmplY3Q8L1Q+DQogICAgICA8VD5TeXN0ZW0uT2JqZWN0PC9UPg0KICAgIDwvVE4+DQogICAgPE1TPg0KICAgICAgPE9iaiBOPSJLZXlEYXRhIiBSZWZJZD0iMSI+DQogICAgICAgIDxUTiBSZWZJZD0iMSI+DQogICAgICAgICAgPFQ+U3lzdGVtLk9iamVjdFtdPC9UPg0KICAgICAgICAgIDxUPlN5c3RlbS5BcnJheTwvVD4NCiAgICAgICAgICA8VD5TeXN0ZW0uT2JqZWN0PC9UPg0KICAgICAgICA8L1ROPg0KICAgICAgICA8TFNUPg0KICAgICAgICAgIDxPYmogUmVmSWQ9IjIiPg0KICAgICAgICAgICAgPFROUmVmIFJlZklkPSIwIiAvPg0KICAgICAgICAgICAgPE1TPg0KICAgICAgICAgICAgICA8UyBOPSJIYXNoIj4xRUZBNTk3QUVERTAyNkNCMDg2RTY4NTIwRjVDNjM2QTc3Q0U1QTNDMDA4RjhENkUxQjBEQjYyMkM5NzFCRkEyPC9TPg0KICAgICAgICAgICAgICA8STMyIE49Ikl0ZXJhdGlvbkNvdW50Ij41MDAwMDwvSTMyPg0KICAgICAgICAgICAgICA8QkEgTj0iS2V5Ij5KbHZqZDBsc2F0VDZxdFNBRXlQSGFEelhrRVJLVS82Z29rQ3QzZm4zRE1VNndSbTFiMy9RcFRBTDRBNk9BSXlsPC9CQT4NCiAgICAgICAgICAgICAgPEJBIE49Ikhhc2hTYWx0Ij5IMzYxc2ZzUENEVXk1Ri92NUN2eno1VTVQVk5KNjhuUWtQTFd5RVltRU44PTwvQkE+DQogICAgICAgICAgICAgIDxCQSBOPSJTYWx0Ij5jcHE3V1ZFRHVwWVhVbVlDbGVRWE0yVWkxN2lFa0s2ZTFrWTYyT2ZONXRJPTwvQkE+DQogICAgICAgICAgICAgIDxCQSBOPSJJViI+Q1VsZWIrbStjbHUvYVk0MmE1aWVTNWlwQWl5NEo1T2hZTmVUR1BSUkhCST08L0JBPg0KICAgICAgICAgICAgPC9NUz4NCiAgICAgICAgICA8L09iaj4NCiAgICAgICAgPC9MU1Q+DQogICAgICA8L09iaj4NCiAgICAgIDxCQSBOPSJDaXBoZXJUZXh0Ij5oLzlodnE5S2ViSnROUmE2NWc5NDVmUDlLU0FwRmYxZ3loaHBYc0s2TFBPZTF3WVRRaFFaTGRxN2lnYlJhWloydU9EeWF0d3diUFVGbFZRVWd2Tm5YWTUxNjUrbjhGYkZOUjd6bTlBWHVNVT08L0JBPg0KICAgICAgPEJBIE49IkhNQUMiPnE5R3BaZlp5U3pHaDByME1uaE1RM3V3S3ZudkdobnJxeFVneG9jS0RRUkU9PC9CQT4NCiAgICAgIDxTIE49IlR5cGUiPlN5c3RlbS5NYW5hZ2VtZW50LkF1dG9tYXRpb24uUFNDcmVkZW50aWFsPC9TPg0KICAgIDwvTVM+DQogIDwvT2JqPg0KPC9PYmpzPg==]'
-#      MemberOf:
-#        - Domain Admins
-#      Path: OU=Admin,DC=contoso,DC=com
-#    - UserName: DhcpAdminService
-#      DomainName: contoso
-#      Password: '[ENC=PE9ianMgVmVyc2lvbj0iMS4xLjAuMSIgeG1sbnM9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vcG93ZXJzaGVsbC8yMDA0LzA0Ij4NCiAgPE9iaiBSZWZJZD0iMCI+DQogICAgPFROIFJlZklkPSIwIj4NCiAgICAgIDxUPlN5c3RlbS5NYW5hZ2VtZW50LkF1dG9tYXRpb24uUFNDdXN0b21PYmplY3Q8L1Q+DQogICAgICA8VD5TeXN0ZW0uT2JqZWN0PC9UPg0KICAgIDwvVE4+DQogICAgPE1TPg0KICAgICAgPE9iaiBOPSJLZXlEYXRhIiBSZWZJZD0iMSI+DQogICAgICAgIDxUTiBSZWZJZD0iMSI+DQogICAgICAgICAgPFQ+U3lzdGVtLk9iamVjdFtdPC9UPg0KICAgICAgICAgIDxUPlN5c3RlbS5BcnJheTwvVD4NCiAgICAgICAgICA8VD5TeXN0ZW0uT2JqZWN0PC9UPg0KICAgICAgICA8L1ROPg0KICAgICAgICA8TFNUPg0KICAgICAgICAgIDxPYmogUmVmSWQ9IjIiPg0KICAgICAgICAgICAgPFROUmVmIFJlZklkPSIwIiAvPg0KICAgICAgICAgICAgPE1TPg0KICAgICAgICAgICAgICA8UyBOPSJIYXNoIj4xRUZBNTk3QUVERTAyNkNCMDg2RTY4NTIwRjVDNjM2QTc3Q0U1QTNDMDA4RjhENkUxQjBEQjYyMkM5NzFCRkEyPC9TPg0KICAgICAgICAgICAgICA8STMyIE49Ikl0ZXJhdGlvbkNvdW50Ij41MDAwMDwvSTMyPg0KICAgICAgICAgICAgICA8QkEgTj0iS2V5Ij5KbHZqZDBsc2F0VDZxdFNBRXlQSGFEelhrRVJLVS82Z29rQ3QzZm4zRE1VNndSbTFiMy9RcFRBTDRBNk9BSXlsPC9CQT4NCiAgICAgICAgICAgICAgPEJBIE49Ikhhc2hTYWx0Ij5IMzYxc2ZzUENEVXk1Ri92NUN2eno1VTVQVk5KNjhuUWtQTFd5RVltRU44PTwvQkE+DQogICAgICAgICAgICAgIDxCQSBOPSJTYWx0Ij5jcHE3V1ZFRHVwWVhVbVlDbGVRWE0yVWkxN2lFa0s2ZTFrWTYyT2ZONXRJPTwvQkE+DQogICAgICAgICAgICAgIDxCQSBOPSJJViI+Q1VsZWIrbStjbHUvYVk0MmE1aWVTNWlwQWl5NEo1T2hZTmVUR1BSUkhCST08L0JBPg0KICAgICAgICAgICAgPC9NUz4NCiAgICAgICAgICA8L09iaj4NCiAgICAgICAgPC9MU1Q+DQogICAgICA8L09iaj4NCiAgICAgIDxCQSBOPSJDaXBoZXJUZXh0Ij5oLzlodnE5S2ViSnROUmE2NWc5NDVmUDlLU0FwRmYxZ3loaHBYc0s2TFBPZTF3WVRRaFFaTGRxN2lnYlJhWloydU9EeWF0d3diUFVGbFZRVWd2Tm5YWTUxNjUrbjhGYkZOUjd6bTlBWHVNVT08L0JBPg0KICAgICAgPEJBIE49IkhNQUMiPnE5R3BaZlp5U3pHaDByME1uaE1RM3V3S3ZudkdobnJxeFVneG9jS0RRUkU9PC9CQT4NCiAgICAgIDxTIE49IlR5cGUiPlN5c3RlbS5NYW5hZ2VtZW50LkF1dG9tYXRpb24uUFNDcmVkZW50aWFsPC9TPg0KICAgIDwvTVM+DQogIDwvT2JqPg0KPC9PYmpzPg==]'
-#      MemberOf:
-#        - Domain Admins
-#      Path: OU=Admin,DC=contoso,DC=com
 
 JeaEndpoints:
   EndPoints:
     - Name: JeaDiscovery
       Ensure: Present
       RoleDefinitions:
-        NT AUTHORITY\Authenticated Users:
+        NT-AUTORITÄT\Authentifizierte Benutzer:
           RoleCapabilities:
             - JeaCapability
       SessionType: RestrictedRemoteServer
       HungRegistrationTimeout: 15
       VisibleProviders:
         - FileSystem
-      RunAsVirtualAccount: true
-    
-    - Name: JeaDemo1
-      GroupManagedServiceAccount: contoso\GMSA1
-      Ensure: Present
-      RoleDefinitions:
-        contoso\Domain Users:
-          RoleCapabilities:
-          - Demo1
-        contoso\Domain Computers:
-          RoleCapabilities:
-          - Demo1
-      SessionType: RestrictedRemoteServer
-    
-    - Name: JeaDemo2
-      GroupManagedServiceAccount: contoso\GMSA2
-      Ensure: Present
-      RoleDefinitions:
-        contoso\Domain Users:
-          RoleCapabilities:
-          - Demo1
-          - Demo2
-        contoso\Domain Computers:
-          RoleCapabilities:
-          - Demo1
-          - Demo2
-      SessionType: RestrictedRemoteServer
-    
-    - Name: AdManagement
-      GroupManagedServiceAccount: contoso\AdAdmin
-      Ensure: Present
-      RoleDefinitions:
-        contoso\AdManagementAll:
-          RoleCapabilities:
-          - AdManagementUsers
-          - AdManagementGroups
-          - AdManagementComputers
-        contoso\AdManagementUsers:
-          RoleCapabilities:
-          - AdManagementUsers
-        contoso\AdManagementComputers:
-          RoleCapabilities:
-          - AdManagementComputers
-      SessionType: RestrictedRemoteServer
 
-    - Name: DnsManagement
-      GroupManagedServiceAccount: contoso\DnsAdmin
+# Duplizieren wie erforderlich pro Endpoint=GMSA , aber mehrere Rollen möglich
+
+    - Name: JeaDHCP
+      RunAsVirtualAccount: true
+      # GroupManagedServiceAccount: contoso\GMSA1
       Ensure: Present
       RoleDefinitions:
-        contoso\DnsAdminRecords:
+        V998dpv1\V998GGA-SCOM-DHCP-Leser:
           RoleCapabilities:
-          - DnsManagementRecords
-      SessionType: RestrictedRemoteServer
-    
-    - Name: DhcpManagement
-      GroupManagedServiceAccount: contoso\DhcpAdmin
-      Ensure: Present
-      RoleDefinitions:
-        contoso\Domain Users:
-          RoleCapabilities:
-          - DhcpManagement
-        contoso\Domain Computers:
-          RoleCapabilities:
-          - DhcpManagement
+          - q-SPD_DashBoardAD
+          - q-spd_DashBoardCS
       SessionType: RestrictedRemoteServer
