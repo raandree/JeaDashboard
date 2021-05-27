@@ -2,3 +2,5 @@ JeaConfig/BuildOutput/*
 !JeaConfig/BuildOutput/Modules
 
 Lab/testResults.xml
+
+JeaConfig/DscConfigData/Roles/Roles.yml
