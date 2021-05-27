@@ -23,35 +23,37 @@ $metaData = foreach ($script in $scripts) {
     $md
 }
 
+$jeaRoles = @{ 
+    JeaRoles       = @{
+        Roles = @()
+    }
+    Configurations = , 'JeaRoles'
+
+}
+
 $roles = $metaData | Group-Object -Property JeaRole
-foreach ($role in $roles) {
+$rolesToExport = foreach ($role in $roles) {
     $scripts = $role.Group
     $roleName = $role.Name
     $modulesToImport = $scripts.ModulesToImport | Select-Object -Unique
-    $role = @{ 
-        JeaRoles          = @{
-            Roles = @(
-                @{
-                    Path                = "C:\Program Files\WindowsPowerShell\Modules\$ModuleName\RoleCapabilities\$roleName.psrc"
-                    ModulesToImport     = $modulesToImport
-                    VisibleFunctions    = @()
-                    FunctionDefinitions = @()
-                }
-            )
-        }
-        Configurations = , 'JeaRoles'
     
+    $jeaRole = @{
+        Path                = "C:\Program Files\WindowsPowerShell\Modules\$ModuleName\RoleCapabilities\$roleName.psrc"
+        ModulesToImport     = $modulesToImport
+        VisibleFunctions    = @()
+        FunctionDefinitions = @()
     }
 
     foreach ($script in $scripts) {
-
         $scriptRole = $role.JeaRoles.Roles | Where-Object Path -like "*$($script.JeaRole)*"
-        $scriptRole.VisibleFunctions += $script.ScriptName
-        $scriptRole.FunctionDefinitions += @{
+        $jeaRole.VisibleFunctions += $script.ScriptName
+        $jeaRole.FunctionDefinitions += @{
             Name        = $script.ScriptName
             ScriptBlock = Get-Content -Path $script.ScriptFullName -Raw
         }
     }
 
-    $role | ConvertTo-Yaml | Out-File -FilePath "$here\DscConfigData\Roles\$roleName.yml"
+    $jeaRole
 }
+
+$rolesToExport | ConvertTo-Yaml | Out-File -FilePath "$here\DscConfigData\Roles\Roles.yml"

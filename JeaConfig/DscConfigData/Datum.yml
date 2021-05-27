@@ -1,11 +1,6 @@
 ResolutionPrecedence:
   - AllNodes\$($Node.NodeName)
-  - Roles\Demo
-  - Roles\DhcpManagement
-  - Roles\DnsManagementRecords
-  - Roles\AdManagementComputers
-  - Roles\AdManagementUsers
-  - Roles\AdManagementGroups
+  - Roles\Roles
   - Roles\JeaCapability
   - JEA\Endpoints
   - JEA\Helpers
