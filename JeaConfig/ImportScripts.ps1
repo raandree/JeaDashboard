@@ -56,4 +56,5 @@ $rolesToExport = foreach ($role in $roles) {
     $jeaRole
 }
 
-$rolesToExport | ConvertTo-Yaml | Out-File -FilePath "$here\DscConfigData\Roles\Roles.yml"
+$jeaRoles.JeaRoles.Roles = $rolesToExport
+$jeaRoles | ConvertTo-Yaml | Out-File -FilePath "$here\DscConfigData\Roles\Roles.yml"
