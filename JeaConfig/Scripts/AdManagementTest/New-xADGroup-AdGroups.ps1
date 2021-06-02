@@ -15,19 +15,11 @@
     "GUID": "2891e18e-f290-4309-929e-1cfa5aedb7b5",
     "ModulesToImport": ["ActiveDirectory"]
 }
-
-.EXAMPLE
-
-	Zum Starten des Skripts nutze folgendes Kommando:
-    Testscript.ps1
-  
-.NOTES
-
 #>
 
 param (
     [Parameter(ParameterSetName = 'Default')]
-    [string]$Path = "CN=Users,DC=contoso,DC=com",
+    [string]$Path = 'CN=Users,DC=contoso,DC=com',
     
     [Parameter(Mandatory, ParameterSetName = 'Default')]
     [string]$Name,
