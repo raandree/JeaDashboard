@@ -106,32 +106,6 @@ JeaEndpoints:
         - FileSystem
       RunAsVirtualAccount: true
     
-    - Name: JeaDemo1
-      GroupManagedServiceAccount: contoso\GMSA1
-      Ensure: Present
-      RoleDefinitions:
-        contoso\Domain Users:
-          RoleCapabilities:
-          - Demo1
-        contoso\Domain Computers:
-          RoleCapabilities:
-          - Demo1
-      SessionType: RestrictedRemoteServer
-    
-    - Name: JeaDemo2
-      GroupManagedServiceAccount: contoso\GMSA2
-      Ensure: Present
-      RoleDefinitions:
-        contoso\Domain Users:
-          RoleCapabilities:
-          - Demo1
-          - Demo2
-        contoso\Domain Computers:
-          RoleCapabilities:
-          - Demo1
-          - Demo2
-      SessionType: RestrictedRemoteServer
-    
     - Name: AdManagement
       GroupManagedServiceAccount: contoso\AdAdmin
       Ensure: Present
